@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Decentralized Fact Checker</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #080b0f;
+    --surface: #0e1318;
+    --border: #1e2832;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #c9d1d9;
+    --muted: #4a5568;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Space Grotesk', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(0,229,255,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(124,58,237,0.05) 0%, transparent 60%);
+  }
+
+  header {
+    max-width: 780px;
+    margin: 0 auto 48px;
+  }
+  .logo {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+  h1 {
+    font-family: var(--font-sans);
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 780px;
+    margin: 0 auto 20px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  textarea {
+    flex: 1;
+    min-width: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 12px 14px;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--muted); }
+
+  button#checkBtn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    padding: 12px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  button#checkBtn:hover { opacity: 0.85; }
+  button#checkBtn:active { transform: scale(0.97); }
+  button#checkBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .settings {
+    display: flex;
+    gap: 20px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .setting label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .setting select, .setting input[type=number] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 5px 8px;
+    outline: none;
+  }
+
+  /* Results */
+  #results { max-width: 780px; margin: 0 auto; display: none; }
+
+  .verdict-banner {
+    border-radius: 8px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 16px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background: currentColor;
+  }
+  .verdict-banner.TRUE  { border-color: var(--green); color: var(--green); }
+  .verdict-banner.FALSE { border-color: var(--red);   color: var(--red);   }
+  .verdict-banner.UNVERIFIABLE { border-color: var(--yellow); color: var(--yellow); }
+
+  .verdict-label {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .verdict-text {
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .verdict-meta {
+    margin-top: 10px;
+    font-size: 11px;
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+
+  .votes-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .vote-pill {
+    flex: 1;
+    min-width: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    text-align: center;
+  }
+  .vote-pill .pill-count {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--font-sans);
+  }
+  .vote-pill .pill-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .vote-pill.TRUE  .pill-count { color: var(--green); }
+  .vote-pill.FALSE .pill-count { color: var(--red);   }
+  .vote-pill.UNVERIFIABLE .pill-count { color: var(--yellow); }
+
+  .nodes-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .node-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    border-left: 3px solid var(--muted);
+  }
+  .node-card.TRUE  { border-left-color: var(--green); }
+  .node-card.FALSE { border-left-color: var(--red);   }
+  .node-card.UNVERIFIABLE { border-left-color: var(--yellow); }
+
+  .node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .node-id {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .node-model {
+    font-size: 10px;
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,229,255,0.2);
+  }
+  .node-verdict-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .TRUE  .node-verdict-badge { background: rgba(34,197,94,0.15);  color: var(--green); }
+  .FALSE .node-verdict-badge { background: rgba(239,68,68,0.15);  color: var(--red);   }
+  .UNVERIFIABLE .node-verdict-badge { background: rgba(245,158,11,0.15); color: var(--yellow); }
+
+  .node-reasoning {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+  .node-confidence {
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .conf-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .conf-fill {
+    height: 100%;
+    border-radius: 1px;
+    background: var(--accent);
+    transition: width 0.5s ease;
+  }
+
+  .section-title {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* Loading */
+  #loading {
+    max-width: 780px;
+    margin: 0 auto;
+    display: none;
+    padding: 32px;
+    text-align: center;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 12px; color: var(--muted); }
+  .loading-steps { margin-top: 12px; font-size: 11px; color: var(--muted); }
+  .loading-steps span { display: block; opacity: 0; animation: fadeIn 0.3s forwards; }
+  @keyframes fadeIn { to { opacity: 0.6; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⬡ GenLayer-like · Decentralized AI Consensus</div>
+  <h1>Decentralized<br/><span>Fact Checker</span></h1>
+  <p class="subtitle">
+    Multiple LLM validator nodes independently evaluate any claim.<br/>
+    Consensus reached via Equivalence Principle — no single point of truth.
+  </p>
+</header>
+
+<div class="card">
+  <div class="input-row">
+    <textarea id="claimInput" placeholder="Enter a claim to fact-check... e.g. 'Elon Musk sold $2B of Tesla stock in 2024'" rows="2"></textarea>
+    <button id="checkBtn" onclick="runCheck()">▶ Check</button>
+  </div>
+  <div class="settings">
+    <div class="setting">
+      <label>Validator Nodes</label>
+      <input type="number" id="agentCount" value="3" min="1" max="7" />
+    </div>
+    <div class="setting">
+      <label>Consensus Threshold</label>
+      <select id="threshold">
+        <option value="0.51">Simple (51%)</option>
+        <option value="0.67" selected>Supermajority (67%)</option>
+        <option value="1.0">Unanimous (100%)</option>
+      </select>
+    </div>
+    <div class="setting">
+      <label>API Base URL</label>
+      <input type="text" id="apiBase" value="http://localhost:8000" style="width:200px" />
+    </div>
+  </div>
+</div>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Running validator nodes in parallel...</div>
+  <div class="loading-steps" id="loadingSteps"></div>
+</div>
+
+<div id="results"></div>
+
+<script>
+const API = () => document.getElementById('apiBase').value.replace(/\/$/, '');
+
+async function runCheck() {
+  const claim = document.getElementById('claimInput').value.trim();
+  if (!claim) return;
+
+  const btn = document.getElementById('checkBtn');
+  btn.disabled = true;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  const steps = document.getElementById('loadingSteps');
+  steps.innerHTML = '';
+  const messages = [
+    '→ Dispatching validator nodes...',
+    '→ Nodes querying LLMs independently...',
+    '→ Collecting verdicts...',
+    '→ Applying consensus logic...',
+  ];
+  messages.forEach((m, i) => {
+    setTimeout(() => {
+      const s = document.createElement('span');
+      s.textContent = m;
+      s.style.animationDelay = `${i * 0.5}s`;
+      steps.appendChild(s);
+    }, i * 800);
+  });
+
+  try {
+    const res = await fetch(`${API()}/check`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        claim,
+        agent_count: parseInt(document.getElementById('agentCount').value),
+        threshold: parseFloat(document.getElementById('threshold').value),
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'API error');
+    }
+
+    const data = await res.json();
+    document.getElementById('loading').style.display = 'none';
+    renderResults(data);
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('results').innerHTML = `
+      <div class="card" style="border-color:#ef4444; color:#ef4444; text-align:center">
+        Error: ${e.message}
+      </div>`;
+    document.getElementById('results').style.display = 'block';
+  }
+
+  btn.disabled = false;
+}
+
+function verdictEmoji(v) {
+  return { TRUE: '✓', FALSE: '✗', UNVERIFIABLE: '?' }[v] || '?';
+}
+
+function renderResults(data) {
+  const votes = data.vote_breakdown;
+  const allVerdicts = ['TRUE', 'FALSE', 'UNVERIFIABLE'];
+
+  const pillsHTML = allVerdicts.map(v => `
+    <div class="vote-pill ${v}">
+      <div class="pill-count">${votes[v] || 0}</div>
+      <div class="pill-label">${v}</div>
+    </div>
+  `).join('');
+
+  const nodesHTML = data.nodes.map(n => `
+    <div class="node-card ${n.verdict}">
+      <div class="node-header">
+        <span class="node-id">NODE_${n.node_id}</span>
+        <span class="node-model">${n.model}</span>
+        <span class="node-verdict-badge">${verdictEmoji(n.verdict)} ${n.verdict}</span>
+      </div>
+      <div class="node-reasoning">${n.reasoning}</div>
+      <div class="node-confidence">
+        Confidence: ${Math.round(n.confidence * 100)}%
+        <div class="conf-bar">
+          <div class="conf-fill" style="width: ${n.confidence * 100}%"></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const html = `
+    <div class="verdict-banner ${data.final_verdict}">
+      <div class="verdict-label">Consensus Verdict</div>
+      <div class="verdict-text">${verdictEmoji(data.final_verdict)} ${data.final_verdict}</div>
+      <div class="verdict-meta">
+        Confidence ${Math.round(data.confidence * 100)}% · 
+        ${data.consensus_reached ? 'Consensus reached' : 'No consensus — defaulted to UNVERIFIABLE'} · 
+        ${data.nodes.length} validators
+      </div>
+    </div>
+
+    <div class="votes-row">${pillsHTML}</div>
+
+    <div class="card">
+      <div class="section-title">Validator Node Results</div>
+      <div class="nodes-grid">${nodesHTML}</div>
+    </div>
+  `;
+
+  const el = document.getElementById('results');
+  el.innerHTML = html;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Allow Enter to submit
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('claimInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      runCheck();
+    }
+  });
+});
+</script>
+</body>
+</html>
