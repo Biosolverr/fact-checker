@@ -18,9 +18,9 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # Models available via OpenRouter — rotate across nodes for diversity
 MODELS = [
-    "google/gemini-flash-1.5",
-    "openai/gpt-4o-mini",
-    "anthropic/claude-3-haiku",
+    "google/gemini-2.0-flash-exp:free",
+    "z-ai/glm-4.5-air:free",
+    "qwen/qwen3-coder:free",
 ]
 
 Verdict = Literal["TRUE", "FALSE", "UNVERIFIABLE"]
