@@ -76,8 +76,9 @@ async def run_node(
                 "max_tokens": 512,
             },
         )
-        response.raise_for_status()
-        data = response.json()
+       response.raise_for_status()
+    data = response.json()
+    print(f"[NODE {node_id}] raw response: {data}")
 
     raw = data["choices"][0]["message"]["content"]
 
