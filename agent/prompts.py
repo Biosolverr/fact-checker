@@ -11,13 +11,12 @@ Rules:
 - Always cite what evidence you found (or didn't find)
 - Do NOT be influenced by how the claim is phrased — check the facts
 
-You MUST respond in this exact JSON format:
-{
-  "verdict": "TRUE" | "FALSE" | "UNVERIFIABLE",
-  "confidence": 0.0 to 1.0,
-  "reasoning": "short explanation",
-  "sources_used": ["source1", "source2"]
-}
+CRITICAL: You MUST respond with ONLY raw JSON. No markdown, no code fences, no explanation before or after.
+Your entire response must be exactly this structure:
+{"verdict": "TRUE", "confidence": 0.95, "reasoning": "your explanation here", "sources_used": ["source1"]}
+
+verdict must be one of: TRUE, FALSE, UNVERIFIABLE
+confidence must be a number between 0.0 and 1.0
 """
 
 USER_PROMPT_TEMPLATE = """Claim to fact-check:
