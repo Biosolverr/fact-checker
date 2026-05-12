@@ -1,13 +1,11 @@
+
 """
 agent/node.py
-
-A single validator node. Mirrors a GenLayer validator that:
-- Runs the contract non-deterministically (fetches web data + calls LLM)
-- Returns a structured result to be compared in consensus
 """
 
 import os
 import json
+import asyncio
 import httpx
 from dataclasses import dataclass
 from typing import Literal
@@ -16,8 +14,7 @@ from agent.prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-# Models available via OpenRouter — rotate across nodes for diversity
-MODELS = MODELS = [
+MODELS = [
     "meta-llama/llama-3.3-70b-instruct:free",
     "z-ai/glm-4.5-air:free",
     "nousresearch/hermes-3-llama-3.1-405b:free",
@@ -43,11 +40,6 @@ async def run_node(
     search_context: str = "",
     model: str | None = None,
 ) -> NodeResult:
-    """
-    Run a single validator node.
-    Each node independently calls an LLM to evaluate the claim.
-    This is equivalent to a GenLayer validator executing a contract.
-    """
     selected_model = model or MODELS[node_id % len(MODELS)]
     prompt = USER_PROMPT_TEMPLATE.format(
         claim=claim,
@@ -58,31 +50,80 @@ async def run_node(
     if not api_key:
         raise ValueError("OPENROUTER_API_KEY not set in environment")
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        response = await client.post(
-            OPENROUTER_URL,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/fact-checker",
-            },
-            json={
-                "model": selected_model,
-                "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.2,  # Low temp for factual tasks
-                "max_tokens": 512,
-            },
+    # Stagger nodes to avoid rate limits
+    await asyncio.sleep(node_id * 3)
+
+    data = None
+    for attempt in range(3):
+        try:
+            print(f"[NODE {node_id}] attempt {attempt + 1} with {selected_model}")
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                response = await client.post(
+                    OPENROUTER_URL,
+                    headers={
+                        "Authorization": f"Bearer {api_key}",
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://github.com/fact-checker",
+                    },
+                    json={
+                        "model": selected_model,
+                        "messages": [
+                            {"role": "system", "content": SYSTEM_PROMPT},
+                            {"role": "user", "content": prompt},
+                        ],
+                        "temperature": 0.2,
+                        "max_tokens": 512,
+                    },
+                )
+                response.raise_for_status()
+                data = response.json()
+                print(f"[NODE {node_id}] success")
+                break
+
+        except (httpx.ReadError, httpx.TimeoutException, httpx.ConnectError) as e:
+            print(f"[NODE {node_id}] connection error attempt {attempt + 1}: {e}")
+            if attempt < 2:
+                await asyncio.sleep(8)
+            else:
+                return NodeResult(
+                    node_id=node_id, model=selected_model,
+                    verdict="UNVERIFIABLE", confidence=0.0,
+                    reasoning=f"Connection error: {type(e).__name__}",
+                    sources_used=[], raw_response="",
+                )
+
+        except httpx.HTTPStatusError as e:
+            status = e.response.status_code
+            print(f"[NODE {node_id}] HTTP {status} attempt {attempt + 1}")
+            if status == 429:
+                wait = 15 * (attempt + 1)
+                print(f"[NODE {node_id}] rate limit, waiting {wait}s...")
+                await asyncio.sleep(wait)
+                if attempt == 2:
+                    return NodeResult(
+                        node_id=node_id, model=selected_model,
+                        verdict="UNVERIFIABLE", confidence=0.0,
+                        reasoning="Rate limited after 3 attempts",
+                        sources_used=[], raw_response="",
+                    )
+            else:
+                return NodeResult(
+                    node_id=node_id, model=selected_model,
+                    verdict="UNVERIFIABLE", confidence=0.0,
+                    reasoning=f"HTTP error {status}",
+                    sources_used=[], raw_response="",
+                )
+
+    if data is None:
+        return NodeResult(
+            node_id=node_id, model=selected_model,
+            verdict="UNVERIFIABLE", confidence=0.0,
+            reasoning="No response received",
+            sources_used=[], raw_response="",
         )
-       response.raise_for_status()
-    data = response.json()
-    print(f"[NODE {node_id}] raw response: {data}")
 
     raw = data["choices"][0]["message"]["content"]
-
-    # Parse JSON response from the LLM
+    print(f"[NODE {node_id}] raw: {raw[:200]}")
     parsed = _parse_verdict(raw)
 
     return NodeResult(
@@ -97,14 +138,11 @@ async def run_node(
 
 
 def _parse_verdict(raw: str) -> dict:
-    """Extract JSON from LLM response, even if it has extra text around it."""
     raw = raw.strip()
-    # Try direct parse
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
         pass
-    # Try to find JSON block
     start = raw.find("{")
     end = raw.rfind("}") + 1
     if start != -1 and end > start:
@@ -112,10 +150,9 @@ def _parse_verdict(raw: str) -> dict:
             return json.loads(raw[start:end])
         except json.JSONDecodeError:
             pass
-    # Fallback
     return {
         "verdict": "UNVERIFIABLE",
         "confidence": 0.0,
-        "reasoning": f"Failed to parse response: {raw[:200]}",
+        "reasoning": f"Failed to parse: {raw[:200]}",
         "sources_used": [],
     }
