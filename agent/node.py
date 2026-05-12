@@ -17,10 +17,10 @@ from agent.prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # Models available via OpenRouter — rotate across nodes for diversity
-MODELS = [
-    "google/gemini-2.0-flash-exp:free",
+MODELS = MODELS = [
+    "meta-llama/llama-3.3-70b-instruct:free",
     "z-ai/glm-4.5-air:free",
-    "qwen/qwen3-coder:free",
+    "nousresearch/hermes-3-llama-3.1-405b:free",
 ]
 
 Verdict = Literal["TRUE", "FALSE", "UNVERIFIABLE"]
