@@ -11,7 +11,6 @@
     --surface: #0e1318;
     --border: #1e2832;
     --accent: #00e5ff;
-    --accent2: #7c3aed;
     --green: #22c55e;
     --red: #ef4444;
     --yellow: #f59e0b;
@@ -60,13 +59,57 @@
     line-height: 1.6;
   }
 
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 780px;
+    margin: 0 auto 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .stat-val { font-size: 24px; font-weight: 700; font-family: var(--font-sans); color: #fff; }
+  .stat-val.green { color: var(--green); }
+  .stat-val.red { color: var(--red); }
+
+  .tabs {
+    max-width: 780px;
+    margin: 0 auto 0;
+    display: flex;
+    gap: 2px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: -1px;
+    transition: color 0.15s;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  .panel { display: none; max-width: 780px; margin: 0 auto; padding-top: 24px; }
+  .panel.active { display: block; }
+
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 24px;
-    max-width: 780px;
-    margin: 0 auto 20px;
+    margin-bottom: 16px;
   }
 
   .input-row {
@@ -75,25 +118,26 @@
     align-items: flex-start;
     flex-wrap: wrap;
   }
-  textarea {
-    flex: 1;
-    min-width: 200px;
+  textarea, input[type=text], input[type=number], select {
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 6px;
     color: var(--text);
     font-family: var(--font-mono);
     font-size: 13px;
-    padding: 12px 14px;
-    resize: vertical;
-    min-height: 60px;
-    transition: border-color 0.2s;
+    padding: 10px 12px;
     outline: none;
+    transition: border-color 0.2s;
   }
-  textarea:focus { border-color: var(--accent); }
-  textarea::placeholder { color: var(--muted); }
+  textarea:focus, input:focus, select:focus { border-color: var(--accent); }
+  textarea::placeholder, input::placeholder { color: var(--muted); }
+  textarea { flex: 1; min-width: 200px; resize: vertical; min-height: 60px; }
+  input[type=text] { width: 100%; }
 
-  button#checkBtn {
+  .settings-row { display: flex; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+  .setting label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
+
+  button.primary {
     background: var(--accent);
     color: #000;
     border: none;
@@ -102,43 +146,15 @@
     font-weight: 600;
     font-size: 12px;
     letter-spacing: 0.08em;
-    padding: 12px 20px;
+    padding: 10px 18px;
     cursor: pointer;
     text-transform: uppercase;
-    transition: opacity 0.2s, transform 0.1s;
     white-space: nowrap;
+    transition: opacity 0.2s, transform 0.1s;
   }
-  button#checkBtn:hover { opacity: 0.85; }
-  button#checkBtn:active { transform: scale(0.97); }
-  button#checkBtn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .settings {
-    display: flex;
-    gap: 20px;
-    margin-top: 14px;
-    flex-wrap: wrap;
-  }
-  .setting label {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 4px;
-  }
-  .setting select, .setting input[type=number] {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 5px 8px;
-    outline: none;
-  }
-
-  /* Results */
-  #results { max-width: 780px; margin: 0 auto; display: none; }
+  button.primary:hover { opacity: 0.85; }
+  button.primary:active { transform: scale(0.97); }
+  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
   .verdict-banner {
     border-radius: 8px;
@@ -159,333 +175,354 @@
   .verdict-banner.TRUE  { border-color: var(--green); color: var(--green); }
   .verdict-banner.FALSE { border-color: var(--red);   color: var(--red);   }
   .verdict-banner.UNVERIFIABLE { border-color: var(--yellow); color: var(--yellow); }
+  .verdict-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px; }
+  .verdict-text { font-family: var(--font-sans); font-size: 40px; font-weight: 700; }
+  .verdict-meta { margin-top: 10px; font-size: 11px; opacity: 0.6; letter-spacing: 0.05em; }
 
-  .verdict-label {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-bottom: 8px;
-  }
-  .verdict-text {
-    font-family: var(--font-sans);
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  .verdict-meta {
-    margin-top: 10px;
-    font-size: 11px;
-    opacity: 0.6;
-    letter-spacing: 0.05em;
-  }
-
-  .votes-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  .vote-pill {
-    flex: 1;
-    min-width: 100px;
+  .claim-id-badge {
+    display: inline-block;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px;
-    text-align: center;
-  }
-  .vote-pill .pill-count {
-    font-size: 28px;
-    font-weight: 700;
-    font-family: var(--font-sans);
-  }
-  .vote-pill .pill-label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-  .vote-pill.TRUE  .pill-count { color: var(--green); }
-  .vote-pill.FALSE .pill-count { color: var(--red);   }
-  .vote-pill.UNVERIFIABLE .pill-count { color: var(--yellow); }
-
-  .nodes-grid {
-    display: grid;
-    gap: 10px;
-  }
-  .node-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px;
-    border-left: 3px solid var(--muted);
-  }
-  .node-card.TRUE  { border-left-color: var(--green); }
-  .node-card.FALSE { border-left-color: var(--red);   }
-  .node-card.UNVERIFIABLE { border-left-color: var(--yellow); }
-
-  .node-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .node-id {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
-  .node-model {
-    font-size: 10px;
-    color: var(--accent);
-    background: rgba(0,229,255,0.08);
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid rgba(0,229,255,0.2);
-  }
-  .node-verdict-badge {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    border-radius: 4px;
     padding: 3px 10px;
-    border-radius: 20px;
-  }
-  .TRUE  .node-verdict-badge { background: rgba(34,197,94,0.15);  color: var(--green); }
-  .FALSE .node-verdict-badge { background: rgba(239,68,68,0.15);  color: var(--red);   }
-  .UNVERIFIABLE .node-verdict-badge { background: rgba(245,158,11,0.15); color: var(--yellow); }
-
-  .node-reasoning {
-    font-size: 12px;
-    color: var(--text);
-    line-height: 1.6;
-    opacity: 0.85;
-  }
-  .node-confidence {
-    margin-top: 8px;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-  .conf-bar {
-    height: 2px;
-    background: var(--border);
-    border-radius: 1px;
-    margin-top: 4px;
-    overflow: hidden;
-  }
-  .conf-fill {
-    height: 100%;
-    border-radius: 1px;
-    background: var(--accent);
-    transition: width 0.5s ease;
-  }
-
-  .section-title {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: 11px;
     color: var(--muted);
     margin-bottom: 12px;
+    letter-spacing: 0.06em;
   }
 
-  /* Loading */
-  #loading {
-    max-width: 780px;
-    margin: 0 auto;
-    display: none;
-    padding: 32px;
-    text-align: center;
-  }
-  .spinner {
-    width: 40px; height: 40px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
+  .votes-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .vote-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; text-align: center; }
+  .vote-count { font-size: 28px; font-weight: 700; font-family: var(--font-sans); }
+  .vote-count.TRUE  { color: var(--green); }
+  .vote-count.FALSE { color: var(--red); }
+  .vote-count.UNVERIFIABLE { color: var(--yellow); }
+  .vote-name { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+  .node-card { background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--muted); border-radius: 6px; padding: 16px; margin-bottom: 8px; }
+  .node-card.TRUE  { border-left-color: var(--green); }
+  .node-card.FALSE { border-left-color: var(--red); }
+  .node-card.UNVERIFIABLE { border-left-color: var(--yellow); }
+  .node-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+  .node-id { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  .node-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.06em; }
+  .node-badge.TRUE  { background: rgba(34,197,94,0.15); color: var(--green); }
+  .node-badge.FALSE { background: rgba(239,68,68,0.15); color: var(--red); }
+  .node-badge.UNVERIFIABLE { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .node-reasoning { font-size: 12px; color: var(--text); line-height: 1.6; opacity: 0.85; }
+
+  .section-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+
+  .history-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .history-id { font-size: 11px; color: var(--muted); min-width: 28px; }
+  .history-claim { font-size: 12px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .history-verdict { font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
+  .history-verdict.TRUE  { background: rgba(34,197,94,0.15); color: var(--green); }
+  .history-verdict.FALSE { background: rgba(239,68,68,0.15); color: var(--red); }
+  .history-verdict.UNVERIFIABLE { background: rgba(245,158,11,0.15); color: var(--yellow); }
+
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 8px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 12px; color: var(--muted); }
-  .loading-steps { margin-top: 12px; font-size: 11px; color: var(--muted); }
-  .loading-steps span { display: block; opacity: 0; animation: fadeIn 0.3s forwards; }
-  @keyframes fadeIn { to { opacity: 0.6; } }
+
+  .msg { font-size: 12px; color: var(--muted); padding: 10px 0; }
+  .msg.error { color: var(--red); }
+
+  /* API key input */
+  .api-key-bar {
+    max-width: 780px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .api-key-bar label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .api-key-bar input { flex: 1; min-width: 200px; font-size: 12px; margin: 0; }
+  .api-key-bar .hint { font-size: 10px; color: var(--muted); flex-basis: 100%; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">⬡ GenLayer-like · Decentralized AI Consensus</div>
+  <div class="logo">⬡ GenLayer · Decentralized AI Consensus</div>
   <h1>Decentralized<br/><span>Fact Checker</span></h1>
   <p class="subtitle">
-    Multiple LLM validator nodes independently evaluate any claim.<br/>
-    Consensus reached via Equivalence Principle — no single point of truth.
+    Implements the on-chain FactChecker contract interface.<br/>
+    check_claim · get_verdict(id) · get_count() — with persistent local storage.
   </p>
 </header>
 
-<div class="card">
-  <div class="input-row">
-    <textarea id="claimInput" placeholder="Enter a claim to fact-check... e.g. 'Elon Musk sold $2B of Tesla stock in 2024'" rows="2"></textarea>
-    <button id="checkBtn" onclick="runCheck()">▶ Check</button>
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">get_count()</div>
+    <div class="stat-val" id="statCount">0</div>
   </div>
-  <div class="settings">
-    <div class="setting">
-      <label>Validator Nodes</label>
-      <input type="number" id="agentCount" value="3" min="1" max="7" />
-    </div>
-    <div class="setting">
-      <label>Consensus Threshold</label>
-      <select id="threshold">
-        <option value="0.51">Simple (51%)</option>
-        <option value="0.67" selected>Supermajority (67%)</option>
-        <option value="1.0">Unanimous (100%)</option>
-      </select>
-    </div>
-    <div class="setting">
-      <label>API Base URL</label>
-      <input type="text" id="apiBase" value="http://localhost:8000" style="width:200px" />
-    </div>
+  <div class="stat-card">
+    <div class="stat-label">True</div>
+    <div class="stat-val green" id="statTrue">0</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">False</div>
+    <div class="stat-val red" id="statFalse">0</div>
   </div>
 </div>
 
-<div id="loading">
-  <div class="spinner"></div>
-  <div class="loading-text">Running validator nodes in parallel...</div>
-  <div class="loading-steps" id="loadingSteps"></div>
+<div class="api-key-bar">
+  <label>Anthropic API Key</label>
+  <input type="password" id="apiKey" placeholder="sk-ant-..." />
+  <span class="hint">Stored only in memory — not saved to disk or localStorage.</span>
 </div>
 
-<div id="results"></div>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('check')">check_claim</button>
+  <button class="tab" onclick="switchTab('get')">get_verdict</button>
+  <button class="tab" onclick="switchTab('history')">history</button>
+</div>
+
+<!-- CHECK CLAIM -->
+<div class="panel active" id="panel-check">
+  <div class="card">
+    <div class="input-row">
+      <textarea id="claimInput" placeholder="Enter a claim to fact-check..." rows="2"></textarea>
+      <button class="primary" id="checkBtn" onclick="runCheck()">▶ Run</button>
+    </div>
+    <div class="settings-row">
+      <div class="setting">
+        <label>Validators</label>
+        <input type="number" id="agentCount" value="3" min="1" max="5" style="width:70px" />
+      </div>
+      <div class="setting">
+        <label>Threshold</label>
+        <select id="threshold">
+          <option value="0.51">Simple (51%)</option>
+          <option value="0.67" selected>Supermajority (67%)</option>
+          <option value="1.0">Unanimous (100%)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="checkStatus"></div>
+  <div id="checkResults"></div>
+</div>
+
+<!-- GET VERDICT -->
+<div class="panel" id="panel-get">
+  <div class="card">
+    <div class="input-row">
+      <input type="text" id="getIdInput" placeholder="claim_id (e.g. 0, 1, 2...)" style="flex:1; min-width:150px" />
+      <button class="primary" onclick="getVerdict()">▶ Get</button>
+    </div>
+  </div>
+  <div id="getResult"></div>
+</div>
+
+<!-- HISTORY -->
+<div class="panel" id="panel-history">
+  <div class="card">
+    <div class="section-label">Stored claims — checks[ ]</div>
+    <div id="historyList"><div class="msg">No claims checked yet.</div></div>
+  </div>
+</div>
 
 <script>
-const API = () => document.getElementById('apiBase').value.replace(/\/$/, '');
+const STORAGE_KEY = 'fc_checks_v1';
+const STORAGE_COUNT = 'fc_count_v1';
+
+function loadStore() {
+  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch { return {}; }
+}
+function saveStore(store) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch {}
+}
+function getCount() {
+  return parseInt(localStorage.getItem(STORAGE_COUNT) || '0', 10);
+}
+function setCount(n) {
+  try { localStorage.setItem(STORAGE_COUNT, String(n)); } catch {}
+}
+
+function updateStats() {
+  const entries = Object.values(loadStore());
+  document.getElementById('statCount').textContent = entries.length;
+  document.getElementById('statTrue').textContent = entries.filter(e => e.verdict === 'TRUE').length;
+  document.getElementById('statFalse').textContent = entries.filter(e => e.verdict === 'FALSE').length;
+}
+
+function switchTab(name) {
+  ['check','get','history'].forEach((t, i) => {
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t === name);
+    document.getElementById('panel-' + t).classList.toggle('active', t === name);
+  });
+  if (name === 'history') renderHistory();
+}
+
+async function callClaude(apiKey, systemPrompt, userPrompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-ipc': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }]
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err.error && err.error.message) || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.content.map(b => b.text || '').join('');
+}
 
 async function runCheck() {
   const claim = document.getElementById('claimInput').value.trim();
   if (!claim) return;
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey) { alert('Enter your Anthropic API key first.'); return; }
 
   const btn = document.getElementById('checkBtn');
-  btn.disabled = true;
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('loading').style.display = 'block';
+  const status = document.getElementById('checkStatus');
+  const results = document.getElementById('checkResults');
+  const n = parseInt(document.getElementById('agentCount').value) || 3;
+  const threshold = parseFloat(document.getElementById('threshold').value);
 
-  const steps = document.getElementById('loadingSteps');
-  steps.innerHTML = '';
-  const messages = [
-    '→ Dispatching validator nodes...',
-    '→ Nodes querying LLMs independently...',
-    '→ Collecting verdicts...',
-    '→ Applying consensus logic...',
-  ];
-  messages.forEach((m, i) => {
-    setTimeout(() => {
-      const s = document.createElement('span');
-      s.textContent = m;
-      s.style.animationDelay = `${i * 0.5}s`;
-      steps.appendChild(s);
-    }, i * 800);
-  });
+  btn.disabled = true;
+  results.innerHTML = '';
+  status.innerHTML = '<span class="spinner"></span><span class="msg">Running ' + n + ' validator nodes in parallel...</span>';
+
+  const system = `You are a fact-checker validator node on a decentralized network.
+Analyze the claim carefully and respond ONLY with a valid JSON object:
+{"verdict":"TRUE","reasoning":"one concise sentence"}
+verdict must be exactly one of: TRUE, FALSE, UNVERIFIABLE
+No preamble, no markdown, no extra text.`;
 
   try {
-    const res = await fetch(`${API()}/check`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        claim,
-        agent_count: parseInt(document.getElementById('agentCount').value),
-        threshold: parseFloat(document.getElementById('threshold').value),
-      }),
+    const calls = Array.from({ length: n }, (_, i) =>
+      callClaude(apiKey, system, `Claim: "${claim}"\nYou are validator node #${i + 1}. Independently assess this claim.`)
+    );
+    const rawResults = await Promise.all(calls);
+
+    const nodes = rawResults.map((raw, i) => {
+      try {
+        const clean = raw.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(clean);
+        const verdict = ['TRUE','FALSE','UNVERIFIABLE'].includes(parsed.verdict) ? parsed.verdict : 'UNVERIFIABLE';
+        return { node_id: i + 1, verdict, reasoning: parsed.reasoning || '' };
+      } catch {
+        return { node_id: i + 1, verdict: 'UNVERIFIABLE', reasoning: 'Parse error' };
+      }
     });
 
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || 'API error');
+    const counts = { TRUE: 0, FALSE: 0, UNVERIFIABLE: 0 };
+    nodes.forEach(nd => counts[nd.verdict]++);
+
+    let final_verdict = 'UNVERIFIABLE';
+    let consensus = false;
+    for (const v of ['TRUE', 'FALSE', 'UNVERIFIABLE']) {
+      if (counts[v] / n >= threshold) { final_verdict = v; consensus = true; break; }
     }
 
-    const data = await res.json();
-    document.getElementById('loading').style.display = 'none';
-    renderResults(data);
-  } catch (e) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('results').innerHTML = `
-      <div class="card" style="border-color:#ef4444; color:#ef4444; text-align:center">
-        Error: ${e.message}
-      </div>`;
-    document.getElementById('results').style.display = 'block';
-  }
+    const claimId = String(getCount());
+    const store = loadStore();
+    store[claimId] = { claim, verdict: final_verdict, nodes, timestamp: Date.now() };
+    saveStore(store);
+    setCount(getCount() + 1);
+    updateStats();
 
+    status.innerHTML = '';
+    results.innerHTML = buildResults(claimId, final_verdict, counts, nodes, n, consensus, threshold);
+  } catch (e) {
+    status.innerHTML = '';
+    results.innerHTML = '<div class="msg error">Error: ' + e.message + '</div>';
+  }
   btn.disabled = false;
 }
 
-function verdictEmoji(v) {
-  return { TRUE: '✓', FALSE: '✗', UNVERIFIABLE: '?' }[v] || '?';
-}
+function buildResults(claimId, final_verdict, counts, nodes, n, consensus, threshold) {
+  const pillsHTML = ['TRUE','FALSE','UNVERIFIABLE'].map(v => `
+    <div class="vote-pill">
+      <div class="vote-count ${v}">${counts[v]}</div>
+      <div class="vote-name">${v}</div>
+    </div>`).join('');
 
-function renderResults(data) {
-  const votes = data.vote_breakdown;
-  const allVerdicts = ['TRUE', 'FALSE', 'UNVERIFIABLE'];
-
-  const pillsHTML = allVerdicts.map(v => `
-    <div class="vote-pill ${v}">
-      <div class="pill-count">${votes[v] || 0}</div>
-      <div class="pill-label">${v}</div>
-    </div>
-  `).join('');
-
-  const nodesHTML = data.nodes.map(n => `
-    <div class="node-card ${n.verdict}">
+  const nodesHTML = nodes.map(nd => `
+    <div class="node-card ${nd.verdict}">
       <div class="node-header">
-        <span class="node-id">NODE_${n.node_id}</span>
-        <span class="node-model">${n.model}</span>
-        <span class="node-verdict-badge">${verdictEmoji(n.verdict)} ${n.verdict}</span>
+        <span class="node-id">NODE_${nd.node_id}</span>
+        <span class="node-badge ${nd.verdict}">${nd.verdict}</span>
       </div>
-      <div class="node-reasoning">${n.reasoning}</div>
-      <div class="node-confidence">
-        Confidence: ${Math.round(n.confidence * 100)}%
-        <div class="conf-bar">
-          <div class="conf-fill" style="width: ${n.confidence * 100}%"></div>
-        </div>
-      </div>
-    </div>
-  `).join('');
+      <div class="node-reasoning">${nd.reasoning}</div>
+    </div>`).join('');
 
-  const html = `
-    <div class="verdict-banner ${data.final_verdict}">
+  return `
+    <div class="claim-id-badge">claim_id: ${claimId}</div>
+    <div class="verdict-banner ${final_verdict}">
       <div class="verdict-label">Consensus Verdict</div>
-      <div class="verdict-text">${verdictEmoji(data.final_verdict)} ${data.final_verdict}</div>
+      <div class="verdict-text">${final_verdict}</div>
       <div class="verdict-meta">
-        Confidence ${Math.round(data.confidence * 100)}% · 
-        ${data.consensus_reached ? 'Consensus reached' : 'No consensus — defaulted to UNVERIFIABLE'} · 
-        ${data.nodes.length} validators
+        ${consensus ? 'Consensus reached' : 'No consensus — defaulted to UNVERIFIABLE'} ·
+        ${n} validators · threshold ${Math.round(threshold * 100)}%
       </div>
     </div>
-
     <div class="votes-row">${pillsHTML}</div>
-
     <div class="card">
-      <div class="section-title">Validator Node Results</div>
-      <div class="nodes-grid">${nodesHTML}</div>
-    </div>
-  `;
-
-  const el = document.getElementById('results');
-  el.innerHTML = html;
-  el.style.display = 'block';
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      <div class="section-label">Validator Node Results</div>
+      ${nodesHTML}
+    </div>`;
 }
 
-// Allow Enter to submit
+function getVerdict() {
+  const id = document.getElementById('getIdInput').value.trim();
+  const out = document.getElementById('getResult');
+  if (!id) { out.innerHTML = '<div class="msg error">Enter a claim_id</div>'; return; }
+  const store = loadStore();
+  const entry = store[id];
+  if (!entry) {
+    out.innerHTML = '<div class="msg error">NOT_FOUND — no claim with id ' + id + '</div>';
+    return;
+  }
+  const date = new Date(entry.timestamp).toLocaleString();
+  out.innerHTML = `
+    <div class="claim-id-badge">claim_id: ${id}</div>
+    <div class="verdict-banner ${entry.verdict}">
+      <div class="verdict-label">Stored Verdict</div>
+      <div class="verdict-text">${entry.verdict}</div>
+      <div class="verdict-meta">${date}</div>
+    </div>
+    <div class="card">
+      <div class="section-label">Claim</div>
+      <div style="font-size:13px; line-height:1.6">${entry.claim}</div>
+    </div>`;
+}
+
+function renderHistory() {
+  const store = loadStore();
+  const keys = Object.keys(store).sort((a, b) => parseInt(b) - parseInt(a));
+  const el = document.getElementById('historyList');
+  if (!keys.length) { el.innerHTML = '<div class="msg">No claims checked yet.</div>'; return; }
+  el.innerHTML = keys.map(id => {
+    const e = store[id];
+    return `<div class="history-item">
+      <span class="history-id">#${id}</span>
+      <span class="history-claim" title="${e.claim}">${e.claim}</span>
+      <span class="history-verdict ${e.verdict}">${e.verdict}</span>
+    </div>`;
+  }).join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  updateStats();
   document.getElementById('claimInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      runCheck();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runCheck(); }
   });
 });
+updateStats();
 </script>
 </body>
 </html>
