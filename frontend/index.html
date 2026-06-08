@@ -7,238 +7,105 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #080b0f;
-    --surface: #0e1318;
-    --border: #1e2832;
-    --accent: #00e5ff;
-    --green: #22c55e;
-    --red: #ef4444;
-    --yellow: #f59e0b;
-    --text: #c9d1d9;
-    --muted: #4a5568;
-    --font-mono: 'JetBrains Mono', monospace;
-    --font-sans: 'Space Grotesk', sans-serif;
+    --bg:#080b0f;--surface:#0e1318;--border:#1e2832;
+    --accent:#00e5ff;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;
+    --text:#c9d1d9;--muted:#4a5568;
+    --font-mono:'JetBrains Mono',monospace;--font-sans:'Space Grotesk',sans-serif;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    min-height: 100vh;
-    padding: 40px 20px;
-    background-image:
-      radial-gradient(ellipse at 20% 0%, rgba(0,229,255,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, rgba(124,58,237,0.05) 0%, transparent 60%);
-  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh;padding:40px 20px;
+    background-image:radial-gradient(ellipse at 20% 0%,rgba(0,229,255,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 100%,rgba(124,58,237,0.05) 0%,transparent 60%);}
+  header{max-width:780px;margin:0 auto 40px;}
+  .logo{font-size:11px;letter-spacing:0.25em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;opacity:0.8;}
+  h1{font-family:var(--font-sans);font-size:clamp(24px,4vw,36px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:10px;}
+  h1 span{color:var(--accent);}
+  .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;}
+  code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;color:var(--accent);}
 
-  header {
-    max-width: 780px;
-    margin: 0 auto 48px;
-  }
-  .logo {
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    opacity: 0.8;
-  }
-  h1 {
-    font-family: var(--font-sans);
-    font-size: clamp(24px, 4vw, 36px);
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.15;
-    margin-bottom: 10px;
-  }
-  h1 span { color: var(--accent); }
-  .subtitle {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    line-height: 1.6;
-  }
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:780px;margin:0 auto 24px;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+  .stat-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .stat-val{font-size:24px;font-weight:700;font-family:var(--font-sans);color:#fff;}
+  .stat-val.green{color:var(--green);}.stat-val.red{color:var(--red);}
 
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    max-width: 780px;
-    margin: 0 auto 24px;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-  }
-  .stat-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-  .stat-val { font-size: 24px; font-weight: 700; font-family: var(--font-sans); color: #fff; }
-  .stat-val.green { color: var(--green); }
-  .stat-val.red { color: var(--red); }
+  .tabs{max-width:780px;margin:0 auto;display:flex;gap:2px;border-bottom:1px solid var(--border);}
+  .tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color 0.15s;}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab:hover:not(.active){color:var(--text);}
 
-  .tabs {
-    max-width: 780px;
-    margin: 0 auto 0;
-    display: flex;
-    gap: 2px;
-    border-bottom: 1px solid var(--border);
-  }
-  .tab {
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    padding: 10px 18px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    cursor: pointer;
-    margin-bottom: -1px;
-    transition: color 0.15s;
-  }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab:hover:not(.active) { color: var(--text); }
+  .panel{display:none;max-width:780px;margin:0 auto;padding-top:24px;}
+  .panel.active{display:block;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;}
 
-  .panel { display: none; max-width: 780px; margin: 0 auto; padding-top: 24px; }
-  .panel.active { display: block; }
+  textarea,input[type=text],input[type=password],input[type=number],select{
+    background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.2s;}
+  textarea:focus,input:focus,select:focus{border-color:var(--accent);}
+  textarea::placeholder,input::placeholder{color:var(--muted);}
+  textarea{width:100%;resize:vertical;min-height:64px;}
+  input[type=text],input[type=password]{width:100%;}
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 16px;
-  }
+  .input-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
+  .input-row textarea{flex:1;min-width:200px;}
+  .settings-row{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;}
+  .setting label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
 
-  .input-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  textarea, input[type=text], input[type=number], select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  textarea:focus, input:focus, select:focus { border-color: var(--accent); }
-  textarea::placeholder, input::placeholder { color: var(--muted); }
-  textarea { flex: 1; min-width: 200px; resize: vertical; min-height: 60px; }
-  input[type=text] { width: 100%; }
+  button.primary{background:var(--accent);color:#000;border:none;border-radius:6px;font-family:var(--font-mono);font-weight:600;font-size:12px;letter-spacing:0.08em;padding:10px 20px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:opacity 0.2s,transform 0.1s;}
+  button.primary:hover{opacity:0.85;}button.primary:active{transform:scale(0.97);}button.primary:disabled{opacity:0.4;cursor:not-allowed;}
 
-  .settings-row { display: flex; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
-  .setting label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
+  .verdict-banner{border-radius:8px;padding:28px;text-align:center;margin-bottom:16px;border:1px solid;position:relative;overflow:hidden;}
+  .verdict-banner::before{content:'';position:absolute;inset:0;opacity:0.06;background:currentColor;}
+  .verdict-banner.TRUE{border-color:var(--green);color:var(--green);}
+  .verdict-banner.FALSE{border-color:var(--red);color:var(--red);}
+  .verdict-banner.UNVERIFIABLE{border-color:var(--yellow);color:var(--yellow);}
+  .verdict-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;margin-bottom:8px;}
+  .verdict-text{font-family:var(--font-sans);font-size:40px;font-weight:700;}
+  .verdict-meta{margin-top:10px;font-size:11px;opacity:0.6;letter-spacing:0.05em;}
 
-  button.primary {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    padding: 10px 18px;
-    cursor: pointer;
-    text-transform: uppercase;
-    white-space: nowrap;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-  button.primary:hover { opacity: 0.85; }
-  button.primary:active { transform: scale(0.97); }
-  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .claim-id-badge{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;color:var(--muted);margin-bottom:12px;letter-spacing:0.06em;}
 
-  .verdict-banner {
-    border-radius: 8px;
-    padding: 28px;
-    text-align: center;
-    margin-bottom: 16px;
-    border: 1px solid;
-    position: relative;
-    overflow: hidden;
-  }
-  .verdict-banner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.06;
-    background: currentColor;
-  }
-  .verdict-banner.TRUE  { border-color: var(--green); color: var(--green); }
-  .verdict-banner.FALSE { border-color: var(--red);   color: var(--red);   }
-  .verdict-banner.UNVERIFIABLE { border-color: var(--yellow); color: var(--yellow); }
-  .verdict-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px; }
-  .verdict-text { font-family: var(--font-sans); font-size: 40px; font-weight: 700; }
-  .verdict-meta { margin-top: 10px; font-size: 11px; opacity: 0.6; letter-spacing: 0.05em; }
+  .votes-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .vote-pill{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;text-align:center;}
+  .vote-count{font-size:28px;font-weight:700;font-family:var(--font-sans);}
+  .vote-count.TRUE{color:var(--green);}.vote-count.FALSE{color:var(--red);}.vote-count.UNVERIFIABLE{color:var(--yellow);}
+  .vote-name{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
 
-  .claim-id-badge {
-    display: inline-block;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 3px 10px;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 12px;
-    letter-spacing: 0.06em;
-  }
+  .node-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--muted);border-radius:6px;padding:16px;margin-bottom:8px;}
+  .node-card.TRUE{border-left-color:var(--green);}.node-card.FALSE{border-left-color:var(--red);}.node-card.UNVERIFIABLE{border-left-color:var(--yellow);}
+  .node-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+  .node-id{font-size:11px;color:var(--muted);letter-spacing:0.08em;}
+  .node-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.06em;}
+  .node-badge.TRUE{background:rgba(34,197,94,0.15);color:var(--green);}
+  .node-badge.FALSE{background:rgba(239,68,68,0.15);color:var(--red);}
+  .node-badge.UNVERIFIABLE{background:rgba(245,158,11,0.15);color:var(--yellow);}
+  .node-reasoning{font-size:12px;color:var(--text);line-height:1.6;opacity:0.85;}
+  .node-confidence{margin-top:8px;font-size:10px;color:var(--muted);}
+  .conf-bar{height:2px;background:var(--border);border-radius:1px;margin-top:4px;overflow:hidden;}
+  .conf-fill{height:100%;border-radius:1px;background:var(--accent);transition:width 0.5s ease;}
 
-  .votes-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-  .vote-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; text-align: center; }
-  .vote-count { font-size: 28px; font-weight: 700; font-family: var(--font-sans); }
-  .vote-count.TRUE  { color: var(--green); }
-  .vote-count.FALSE { color: var(--red); }
-  .vote-count.UNVERIFIABLE { color: var(--yellow); }
-  .vote-name { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .section-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 
-  .node-card { background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--muted); border-radius: 6px; padding: 16px; margin-bottom: 8px; }
-  .node-card.TRUE  { border-left-color: var(--green); }
-  .node-card.FALSE { border-left-color: var(--red); }
-  .node-card.UNVERIFIABLE { border-left-color: var(--yellow); }
-  .node-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
-  .node-id { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
-  .node-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.06em; }
-  .node-badge.TRUE  { background: rgba(34,197,94,0.15); color: var(--green); }
-  .node-badge.FALSE { background: rgba(239,68,68,0.15); color: var(--red); }
-  .node-badge.UNVERIFIABLE { background: rgba(245,158,11,0.15); color: var(--yellow); }
-  .node-reasoning { font-size: 12px; color: var(--text); line-height: 1.6; opacity: 0.85; }
+  .history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+  .history-item:hover .history-claim{color:var(--accent);}
+  .history-id{font-size:11px;color:var(--muted);min-width:28px;}
+  .history-claim{font-size:12px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.15s;}
+  .history-verdict{font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+  .history-verdict.TRUE{background:rgba(34,197,94,0.15);color:var(--green);}
+  .history-verdict.FALSE{background:rgba(239,68,68,0.15);color:var(--red);}
+  .history-verdict.UNVERIFIABLE{background:rgba(245,158,11,0.15);color:var(--yellow);}
+  .history-date{font-size:10px;color:var(--muted);white-space:nowrap;}
 
-  .section-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:8px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-steps span{display:block;font-size:11px;color:var(--muted);opacity:0;animation:fadeIn 0.3s forwards;margin-top:4px;}
+  @keyframes fadeIn{to{opacity:0.6;}}
+  .msg{font-size:12px;color:var(--muted);padding:10px 0;}
+  .msg.error{color:var(--red);}
 
-  .history-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-  .history-id { font-size: 11px; color: var(--muted); min-width: 28px; }
-  .history-claim { font-size: 12px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .history-verdict { font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
-  .history-verdict.TRUE  { background: rgba(34,197,94,0.15); color: var(--green); }
-  .history-verdict.FALSE { background: rgba(239,68,68,0.15); color: var(--red); }
-  .history-verdict.UNVERIFIABLE { background: rgba(245,158,11,0.15); color: var(--yellow); }
-
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 8px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .msg { font-size: 12px; color: var(--muted); padding: 10px 0; }
-  .msg.error { color: var(--red); }
-
-  /* API key input */
-  .api-key-bar {
-    max-width: 780px;
-    margin: 0 auto 20px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .api-key-bar label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-  .api-key-bar input { flex: 1; min-width: 200px; font-size: 12px; margin: 0; }
-  .api-key-bar .hint { font-size: 10px; color: var(--muted); flex-basis: 100%; }
+  .api-bar{max-width:780px;margin:0 auto 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;}
+  .api-bar label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;}
+  .api-bar input{margin-bottom:0;}
+  .api-hint{font-size:10px;color:var(--muted);margin-top:6px;}
 </style>
 </head>
 <body>
@@ -247,30 +114,21 @@
   <div class="logo">⬡ GenLayer · Decentralized AI Consensus</div>
   <h1>Decentralized<br/><span>Fact Checker</span></h1>
   <p class="subtitle">
-    Implements the on-chain FactChecker contract interface.<br/>
-    check_claim · get_verdict(id) · get_count() — with persistent local storage.
+    3 независимых validator node параллельно оценивают утверждение.<br/>
+    Консенсус по большинству. <code>check_claim</code> · <code>get_verdict(id)</code> · <code>get_count()</code>
   </p>
 </header>
 
-<div class="stats-row">
-  <div class="stat-card">
-    <div class="stat-label">get_count()</div>
-    <div class="stat-val" id="statCount">0</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">True</div>
-    <div class="stat-val green" id="statTrue">0</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">False</div>
-    <div class="stat-val red" id="statFalse">0</div>
-  </div>
+<div class="api-bar">
+  <label>Anthropic API Key</label>
+  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." />
+  <div class="api-hint">Хранится только в памяти браузера, никуда не отправляется кроме api.anthropic.com</div>
 </div>
 
-<div class="api-key-bar">
-  <label>Anthropic API Key</label>
-  <input type="password" id="apiKey" placeholder="sk-ant-..." />
-  <span class="hint">Stored only in memory — not saved to disk or localStorage.</span>
+<div class="stats-row">
+  <div class="stat-card"><div class="stat-label">get_count()</div><div class="stat-val" id="statCount">0</div></div>
+  <div class="stat-card"><div class="stat-label">True</div><div class="stat-val green" id="statTrue">0</div></div>
+  <div class="stat-card"><div class="stat-label">False</div><div class="stat-val red" id="statFalse">0</div></div>
 </div>
 
 <div class="tabs">
@@ -279,20 +137,19 @@
   <button class="tab" onclick="switchTab('history')">history</button>
 </div>
 
-<!-- CHECK CLAIM -->
 <div class="panel active" id="panel-check">
   <div class="card">
     <div class="input-row">
-      <textarea id="claimInput" placeholder="Enter a claim to fact-check..." rows="2"></textarea>
+      <textarea id="claimInput" placeholder="Введи утверждение для проверки..." rows="2"></textarea>
       <button class="primary" id="checkBtn" onclick="runCheck()">▶ Run</button>
     </div>
     <div class="settings-row">
       <div class="setting">
-        <label>Validators</label>
+        <label>Validator Nodes</label>
         <input type="number" id="agentCount" value="3" min="1" max="5" style="width:70px" />
       </div>
       <div class="setting">
-        <label>Threshold</label>
+        <label>Consensus Threshold</label>
         <select id="threshold">
           <option value="0.51">Simple (51%)</option>
           <option value="0.67" selected>Supermajority (67%)</option>
@@ -305,46 +162,36 @@
   <div id="checkResults"></div>
 </div>
 
-<!-- GET VERDICT -->
 <div class="panel" id="panel-get">
   <div class="card">
     <div class="input-row">
-      <input type="text" id="getIdInput" placeholder="claim_id (e.g. 0, 1, 2...)" style="flex:1; min-width:150px" />
+      <input type="text" id="getIdInput" placeholder="claim_id (например: 0, 1, 2...)" style="flex:1;min-width:150px" />
       <button class="primary" onclick="getVerdict()">▶ Get</button>
     </div>
   </div>
   <div id="getResult"></div>
 </div>
 
-<!-- HISTORY -->
 <div class="panel" id="panel-history">
   <div class="card">
-    <div class="section-label">Stored claims — checks[ ]</div>
-    <div id="historyList"><div class="msg">No claims checked yet.</div></div>
+    <div class="section-label">checks[ ] — все сохранённые проверки</div>
+    <div id="historyList"><div class="msg">Проверок пока нет.</div></div>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY = 'fc_checks_v1';
-const STORAGE_COUNT = 'fc_count_v1';
+const STORAGE_KEY   = 'fc_checks_v4';
+const STORAGE_COUNT = 'fc_count_v4';
 
-function loadStore() {
-  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch { return {}; }
-}
-function saveStore(store) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch {}
-}
-function getCount() {
-  return parseInt(localStorage.getItem(STORAGE_COUNT) || '0', 10);
-}
-function setCount(n) {
-  try { localStorage.setItem(STORAGE_COUNT, String(n)); } catch {}
-}
+function loadStore()  { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch { return {}; } }
+function saveStore(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} }
+function getCount()   { return parseInt(localStorage.getItem(STORAGE_COUNT) || '0', 10); }
+function setCount(n)  { try { localStorage.setItem(STORAGE_COUNT, String(n)); } catch {} }
 
 function updateStats() {
   const entries = Object.values(loadStore());
   document.getElementById('statCount').textContent = entries.length;
-  document.getElementById('statTrue').textContent = entries.filter(e => e.verdict === 'TRUE').length;
+  document.getElementById('statTrue').textContent  = entries.filter(e => e.verdict === 'TRUE').length;
   document.getElementById('statFalse').textContent = entries.filter(e => e.verdict === 'FALSE').length;
 }
 
@@ -356,71 +203,89 @@ function switchTab(name) {
   if (name === 'history') renderHistory();
 }
 
-async function callClaude(apiKey, systemPrompt, userPrompt) {
+// Один независимый вызов Claude — каждая нода думает сама
+async function callNode(apiKey, nodeId, claim) {
+  const system = `You are an independent fact-checker validator node #${nodeId} in a decentralized consensus network.
+Analyze the claim using your knowledge. Respond ONLY with raw JSON, no markdown, no extra text:
+{"verdict":"TRUE","confidence":0.9,"reasoning":"one concise sentence explaining your decision"}
+verdict must be exactly one of: TRUE, FALSE, UNVERIFIABLE
+confidence is a float 0.0–1.0`;
+
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
       'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-ipc': 'true'
+      'anthropic-dangerous-direct-browser-ipc': 'true',
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }]
-    })
+      max_tokens: 300,
+      system,
+      messages: [{ role: 'user', content: `Claim: "${claim}"` }],
+    }),
   });
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error((err.error && err.error.message) || `HTTP ${res.status}`);
   }
+
   const data = await res.json();
-  return data.content.map(b => b.text || '').join('');
+  const raw  = data.content.map(b => b.text || '').join('').trim();
+
+  try {
+    const clean  = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    const verdict = ['TRUE','FALSE','UNVERIFIABLE'].includes(parsed.verdict) ? parsed.verdict : 'UNVERIFIABLE';
+    return { node_id: nodeId, verdict, confidence: parseFloat(parsed.confidence) || 0.5, reasoning: parsed.reasoning || '' };
+  } catch {
+    return { node_id: nodeId, verdict: 'UNVERIFIABLE', confidence: 0.0, reasoning: 'Parse error: ' + raw.slice(0,100) };
+  }
 }
 
 async function runCheck() {
   const claim = document.getElementById('claimInput').value.trim();
   if (!claim) return;
-  const apiKey = document.getElementById('apiKey').value.trim();
-  if (!apiKey) { alert('Enter your Anthropic API key first.'); return; }
 
-  const btn = document.getElementById('checkBtn');
-  const status = document.getElementById('checkStatus');
-  const results = document.getElementById('checkResults');
-  const n = parseInt(document.getElementById('agentCount').value) || 3;
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey) { alert('Введи Anthropic API key'); return; }
+
+  const btn       = document.getElementById('checkBtn');
+  const status    = document.getElementById('checkStatus');
+  const results   = document.getElementById('checkResults');
+  const n         = parseInt(document.getElementById('agentCount').value) || 3;
   const threshold = parseFloat(document.getElementById('threshold').value);
 
   btn.disabled = true;
   results.innerHTML = '';
-  status.innerHTML = '<span class="spinner"></span><span class="msg">Running ' + n + ' validator nodes in parallel...</span>';
+  status.innerHTML = `
+    <div class="card" style="text-align:center">
+      <span class="spinner"></span>
+      <span style="font-size:12px;color:var(--muted)">${n} validator nodes думают независимо...</span>
+      <div id="loadingSteps" class="loading-steps"></div>
+    </div>`;
 
-  const system = `You are a fact-checker validator node on a decentralized network.
-Analyze the claim carefully and respond ONLY with a valid JSON object:
-{"verdict":"TRUE","reasoning":"one concise sentence"}
-verdict must be exactly one of: TRUE, FALSE, UNVERIFIABLE
-No preamble, no markdown, no extra text.`;
+  Array.from({length: n}, (_, i) => `→ NODE_${i+1}: независимый вызов LLM...`).forEach((m, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('loadingSteps');
+      if (!el) return;
+      const s = document.createElement('span');
+      s.textContent = m; s.style.animationDelay = i * 0.1 + 's';
+      el.appendChild(s);
+    }, i * 600);
+  });
 
   try {
-    const calls = Array.from({ length: n }, (_, i) =>
-      callClaude(apiKey, system, `Claim: "${claim}"\nYou are validator node #${i + 1}. Independently assess this claim.`)
+    // Все N нод параллельно и независимо
+    const nodes = await Promise.all(
+      Array.from({length: n}, (_, i) => callNode(apiKey, i + 1, claim))
     );
-    const rawResults = await Promise.all(calls);
 
-    const nodes = rawResults.map((raw, i) => {
-      try {
-        const clean = raw.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(clean);
-        const verdict = ['TRUE','FALSE','UNVERIFIABLE'].includes(parsed.verdict) ? parsed.verdict : 'UNVERIFIABLE';
-        return { node_id: i + 1, verdict, reasoning: parsed.reasoning || '' };
-      } catch {
-        return { node_id: i + 1, verdict: 'UNVERIFIABLE', reasoning: 'Parse error' };
-      }
-    });
-
+    // Консенсус по большинству
     const counts = { TRUE: 0, FALSE: 0, UNVERIFIABLE: 0 };
-    nodes.forEach(nd => counts[nd.verdict]++);
+    nodes.forEach(nd => { counts[nd.verdict] = (counts[nd.verdict] || 0) + 1; });
 
     let final_verdict = 'UNVERIFIABLE';
     let consensus = false;
@@ -428,26 +293,32 @@ No preamble, no markdown, no extra text.`;
       if (counts[v] / n >= threshold) { final_verdict = v; consensus = true; break; }
     }
 
+    const agreeing = nodes.filter(nd => nd.verdict === final_verdict);
+    const confidence = agreeing.length ? agreeing.reduce((s, nd) => s + nd.confidence, 0) / agreeing.length : 0;
+
+    // Сохраняем — mirrors: checks[id] = "claim||verdict"
     const claimId = String(getCount());
-    const store = loadStore();
-    store[claimId] = { claim, verdict: final_verdict, nodes, timestamp: Date.now() };
+    const store   = loadStore();
+    store[claimId] = { claim, verdict: final_verdict, confidence, consensus_reached: consensus, vote_breakdown: counts, nodes, timestamp: Date.now() };
     saveStore(store);
     setCount(getCount() + 1);
     updateStats();
 
     status.innerHTML = '';
-    results.innerHTML = buildResults(claimId, final_verdict, counts, nodes, n, consensus, threshold);
-  } catch (e) {
+    results.innerHTML = buildResults(claimId, claim, final_verdict, confidence, counts, nodes, n, consensus, threshold);
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(e) {
     status.innerHTML = '';
-    results.innerHTML = '<div class="msg error">Error: ' + e.message + '</div>';
+    results.innerHTML = '<div class="msg error">Ошибка: ' + escHtml(e.message) + '</div>';
   }
   btn.disabled = false;
 }
 
-function buildResults(claimId, final_verdict, counts, nodes, n, consensus, threshold) {
+function buildResults(claimId, claim, final_verdict, confidence, counts, nodes, n, consensus, threshold) {
   const pillsHTML = ['TRUE','FALSE','UNVERIFIABLE'].map(v => `
     <div class="vote-pill">
-      <div class="vote-count ${v}">${counts[v]}</div>
+      <div class="vote-count ${v}">${counts[v] || 0}</div>
       <div class="vote-name">${v}</div>
     </div>`).join('');
 
@@ -457,64 +328,69 @@ function buildResults(claimId, final_verdict, counts, nodes, n, consensus, thres
         <span class="node-id">NODE_${nd.node_id}</span>
         <span class="node-badge ${nd.verdict}">${nd.verdict}</span>
       </div>
-      <div class="node-reasoning">${nd.reasoning}</div>
+      <div class="node-reasoning">${escHtml(nd.reasoning)}</div>
+      <div class="node-confidence">Confidence: ${Math.round(nd.confidence * 100)}%
+        <div class="conf-bar"><div class="conf-fill" style="width:${nd.confidence*100}%"></div></div>
+      </div>
     </div>`).join('');
 
   return `
-    <div class="claim-id-badge">claim_id: ${claimId}</div>
+    <div class="claim-id-badge">checks["${claimId}"] = "${escHtml(claim)}||${final_verdict}"</div>
     <div class="verdict-banner ${final_verdict}">
       <div class="verdict-label">Consensus Verdict</div>
       <div class="verdict-text">${final_verdict}</div>
       <div class="verdict-meta">
-        ${consensus ? 'Consensus reached' : 'No consensus — defaulted to UNVERIFIABLE'} ·
-        ${n} validators · threshold ${Math.round(threshold * 100)}%
+        ${consensus ? 'Консенсус достигнут' : 'Консенсус не достигнут — UNVERIFIABLE'} ·
+        ${n} nodes · threshold ${Math.round(threshold*100)}% · confidence ${Math.round(confidence*100)}%
       </div>
     </div>
     <div class="votes-row">${pillsHTML}</div>
     <div class="card">
-      <div class="section-label">Validator Node Results</div>
+      <div class="section-label">Validator Nodes — независимые решения</div>
       ${nodesHTML}
     </div>`;
 }
 
 function getVerdict() {
-  const id = document.getElementById('getIdInput').value.trim();
+  const id  = document.getElementById('getIdInput').value.trim();
   const out = document.getElementById('getResult');
-  if (!id) { out.innerHTML = '<div class="msg error">Enter a claim_id</div>'; return; }
-  const store = loadStore();
-  const entry = store[id];
+  if (!id) { out.innerHTML = '<div class="msg error">Введи claim_id</div>'; return; }
+  const entry = loadStore()[id];
   if (!entry) {
-    out.innerHTML = '<div class="msg error">NOT_FOUND — no claim with id ' + id + '</div>';
+    out.innerHTML = `<div class="msg error">NOT_FOUND — checks["${escHtml(id)}"] не существует</div>`;
     return;
   }
-  const date = new Date(entry.timestamp).toLocaleString();
   out.innerHTML = `
-    <div class="claim-id-badge">claim_id: ${id}</div>
+    <div class="claim-id-badge">get_verdict("${escHtml(id)}")</div>
     <div class="verdict-banner ${entry.verdict}">
-      <div class="verdict-label">Stored Verdict</div>
+      <div class="verdict-label">Сохранённый вердикт</div>
       <div class="verdict-text">${entry.verdict}</div>
-      <div class="verdict-meta">${date}</div>
+      <div class="verdict-meta">${new Date(entry.timestamp).toLocaleString()} · confidence ${Math.round(entry.confidence*100)}%</div>
     </div>
     <div class="card">
-      <div class="section-label">Claim</div>
-      <div style="font-size:13px; line-height:1.6">${entry.claim}</div>
+      <div class="section-label">checks["${escHtml(id)}"] raw</div>
+      <div style="font-size:12px;color:var(--muted);word-break:break-all">"${escHtml(entry.claim)}||${entry.verdict}"</div>
     </div>`;
 }
 
 function renderHistory() {
   const store = loadStore();
-  const keys = Object.keys(store).sort((a, b) => parseInt(b) - parseInt(a));
-  const el = document.getElementById('historyList');
-  if (!keys.length) { el.innerHTML = '<div class="msg">No claims checked yet.</div>'; return; }
+  const keys  = Object.keys(store).sort((a, b) => parseInt(b) - parseInt(a));
+  const el    = document.getElementById('historyList');
+  if (!keys.length) { el.innerHTML = '<div class="msg">Проверок пока нет.</div>'; return; }
   el.innerHTML = keys.map(id => {
     const e = store[id];
-    return `<div class="history-item">
+    return `<div class="history-item" onclick="jumpToVerdict('${id}')">
       <span class="history-id">#${id}</span>
-      <span class="history-claim" title="${e.claim}">${e.claim}</span>
+      <span class="history-claim" title="${escHtml(e.claim)}">${escHtml(e.claim)}</span>
       <span class="history-verdict ${e.verdict}">${e.verdict}</span>
+      <span class="history-date">${new Date(e.timestamp).toLocaleDateString()}</span>
     </div>`;
   }).join('');
 }
+
+function jumpToVerdict(id) { switchTab('get'); document.getElementById('getIdInput').value = id; getVerdict(); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 document.addEventListener('DOMContentLoaded', () => {
   updateStats();
