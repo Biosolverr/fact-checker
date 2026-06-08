@@ -1,0 +1,195 @@
+{
+  "contract": "FactChecker",
+  "network": "GenLayer Studio (Testnet)",
+  "tests": [
+    {
+      "test_id": 1,
+      "method": "check_claim",
+      "input": {
+        "claim": "The Earth revolves around the Sun"
+      },
+      "transaction": {
+        "hash": "0x3054c8478b64c102d32737e34bd175a56f5c517b75451bf0c5c3b845d0a4bf36",
+        "status": "FINALIZED",
+        "result": "SUCCESS",
+        "output": null,
+        "equivalence_principle_output": "UNVERIFIABLE",
+        "consensus": {
+          "path": ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED"],
+          "validators": [
+            {
+              "address": "0xb5A91c7239B1F65375F0Bc8C6F272b3964Be58cf",
+              "model": "openrouter/google/gemini-3-flash-preview",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0xB4A9260b7Dd00c8C1Ca18140BDE3a4EEA7dB0438",
+              "model": "openrouter/xiaomi/mimo-v2.5-pro",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0xc6B75a7C9CC11c2bF0111c5E6ab4357b26334E05",
+              "model": "openrouter/qwen/qwen3.6-plus",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0xF219d9Ddb834fB7bABdBaD9465F3108FBBe4cc82",
+              "model": null,
+              "result": "ERROR",
+              "vote": "Idle",
+              "note": "Validator execution cancelled after quorum"
+            },
+            {
+              "address": "0x82640d7da6B91de501E8Ca4e009F774A8C460DcD",
+              "model": null,
+              "result": "ERROR",
+              "vote": "Idle",
+              "note": "Validator execution cancelled after quorum"
+            }
+          ]
+        }
+      },
+      "state_after": {
+        "get_count": 1,
+        "get_verdict": {
+          "claim_id": "0",
+          "value": "The Earth revolves around the Sun||UNVERIFIABLE"
+        }
+      },
+      "expected_result": "SUCCESS",
+      "actual_result": "SUCCESS",
+      "verdict": "UNVERIFIABLE",
+      "passed": true
+    },
+    {
+      "test_id": 2,
+      "method": "check_claim",
+      "input": {
+        "claim": "The Moon is made of cheese"
+      },
+      "transaction": {
+        "hash": "0x729961d99d1e31133882b738e4a4b50de874fc98a75b150747cfd0d2d97a883d",
+        "status": "FINALIZED",
+        "result": "SUCCESS",
+        "output": null,
+        "equivalence_principle_output": "FALSE",
+        "consensus": {
+          "path": ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED"],
+          "validators": [
+            {
+              "address": "0x2e3c282e2Aea9Bf634B97e96BBcCda4e9848019C",
+              "model": "openrouter/xiaomi/mimo-v2.5-pro",
+              "result": "SUCCESS",
+              "vote": "Leader"
+            },
+            {
+              "address": "0x53b5E9E38702354AEfC354c09475dD08E7322538",
+              "model": "openrouter/x-ai/grok-4.3",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0xB4A9260b7Dd00c8C1Ca18140BDE3a4EEA7dB0438",
+              "model": null,
+              "result": "ERROR",
+              "vote": "Idle",
+              "note": "Validator execution cancelled after quorum"
+            },
+            {
+              "address": "0x65e3378caF93469c4e7cf407c7d482f606683149",
+              "model": "openrouter/z-ai/glm-5.1",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0x7f6d95F56c3a3A05dd21476B4fc93B7aA38519DA",
+              "model": "openrouter/moonshotai/kimi-k2.6",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            }
+          ]
+        }
+      },
+      "state_after": {
+        "get_count": 2,
+        "get_verdict": {
+          "claim_id": "1",
+          "value": "The Moon is made of cheese||FALSE"
+        }
+      },
+      "expected_result": "SUCCESS",
+      "actual_result": "SUCCESS",
+      "verdict": "FALSE",
+      "passed": true
+    },
+    {
+      "test_id": 3,
+      "method": "check_claim",
+      "input": {
+        "claim": "Invisible dragons live under my house"
+      },
+      "transaction": {
+        "hash": "0x16da0833c054b489f6a549fad26a40489279375d6669a0edfaf51759d97e6f78",
+        "status": "FINALIZED",
+        "result": "SUCCESS",
+        "output": null,
+        "equivalence_principle_output": "UNVERIFIABLE",
+        "consensus": {
+          "path": ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED"],
+          "validators": [
+            {
+              "address": "0xCD5327C5E21744922168f8814793e72c766605dF",
+              "model": "openrouter/openai/gpt-5.4",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0x9e7Bf462e369612295ad77294418578af0815611",
+              "model": null,
+              "result": "ERROR",
+              "vote": "Idle",
+              "note": "Validator execution cancelled after quorum"
+            },
+            {
+              "address": "0xb12062a2cc191212998aEC16b4A21A65B0fA404c",
+              "model": "openrouter/z-ai/glm-5.1",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0xBA7120c3A024db905e911CA2c3909A4395645fA5",
+              "model": "openrouter/openai/gpt-5.4-mini",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            },
+            {
+              "address": "0x0c0D773ed918000202007d06FDBE2E891E50b6C8",
+              "model": "openrouter/moonshotai/kimi-k2.6",
+              "result": "SUCCESS",
+              "vote": "Agree"
+            }
+          ]
+        }
+      },
+      "state_after": {
+        "get_count": 3,
+        "get_verdict": {
+          "claim_id": "2",
+          "value": "Invisible dragons live under my house||UNVERIFIABLE"
+        }
+      },
+      "expected_result": "SUCCESS",
+      "actual_result": "SUCCESS",
+      "verdict": "UNVERIFIABLE",
+      "passed": true
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0
+  }
+}
