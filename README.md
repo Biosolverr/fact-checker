@@ -1,3 +1,18 @@
+Repository Architecture
+
+The project consists of two parallel worlds:
+World 1 — FastAPI + real LLMs (agent/ + api/)
+This is the working system right now. Three LLM nodes (Groq llama 70b, 
+Groq llama 8b, GLM-4-flash) run in parallel, each searching via Serper.dev and casting a vote. 
+Consensus is calculated using a majority threshold (66%). These are the "three API keys" you saw in the config.
+
+World 2 — GenLayer contract (contracts/fact_checker.py)
+This is a proof-of-concept demonstrating how the same logic runs on-chain. 
+The contract uses the GenLayer SDK (gl.nondet.exec_prompt via gl.vm.run_nondet_unsafe) 
+and has been successfully tested on the GenLayer testnet — 3/3 transactions finalized with 
+consensus across multiple validator nodes. See test_proof.json for full test results.
+
+
 # 🔍 Decentralized Fact Checker
 
 A **GenLayer-like** AI agent system that uses multi-LLM consensus to fact-check any claim in real time.
