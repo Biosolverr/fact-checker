@@ -6,13 +6,12 @@
 <title>Decentralized Fact Checker — GenLayer</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet" />
 
-<!-- GenLayer JS SDK (ESM via CDN) -->
 <script type="importmap">
 {
   "imports": {
-    "genlayer-js": "https://esm.sh/genlayer-js@latest",
+    "genlayer-js":        "https://esm.sh/genlayer-js@latest",
     "genlayer-js/chains": "https://esm.sh/genlayer-js@latest/chains",
-    "genlayer-js/types": "https://esm.sh/genlayer-js@latest/types"
+    "genlayer-js/types":  "https://esm.sh/genlayer-js@latest/types"
   }
 }
 </script>
@@ -26,20 +25,25 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh;padding:40px 20px;
-    background-image:radial-gradient(ellipse at 20% 0%,rgba(0,229,255,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 100%,rgba(124,58,237,0.05) 0%,transparent 60%);}
-  header{max-width:780px;margin:0 auto 40px;}
+    background-image:radial-gradient(ellipse at 20% 0%,rgba(0,229,255,0.04) 0%,transparent 60%),
+                     radial-gradient(ellipse at 80% 100%,rgba(124,58,237,0.05) 0%,transparent 60%);}
+  header{max-width:780px;margin:0 auto 32px;}
   .logo{font-size:11px;letter-spacing:0.25em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;opacity:0.8;}
   h1{font-family:var(--font-sans);font-size:clamp(24px,4vw,36px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:10px;}
   h1 span{color:var(--accent);}
   .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;}
   code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;color:var(--accent);}
 
-  .network-bar{max-width:780px;margin:0 auto 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .net-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s;}
-  .net-dot.connected{background:var(--green);box-shadow:0 0 6px var(--green);}
-  .net-label{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
-  .net-addr{font-size:11px;color:var(--accent);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .net-status{font-size:11px;color:var(--muted);margin-left:auto;}
+  .bar{max-width:780px;margin:0 auto 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;}
+  .bar-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s;}
+  .dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .dot.err{background:var(--red);}
+  .lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .val{font-size:11px;color:var(--text);flex:1;word-break:break-all;}
+  .val.accent{color:var(--accent);}
+  .hint{font-size:11px;color:var(--yellow);margin-top:8px;line-height:1.5;display:none;}
+  .hint a{color:var(--accent);cursor:pointer;text-decoration:underline;}
 
   .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:780px;margin:0 auto 24px;}
   .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
@@ -48,7 +52,8 @@
   .stat-val.green{color:var(--green);}.stat-val.red{color:var(--red);}
 
   .tabs{max-width:780px;margin:0 auto;display:flex;gap:2px;border-bottom:1px solid var(--border);}
-  .tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color 0.15s;}
+  .tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:var(--font-mono);
+    font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color 0.15s;}
   .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
   .tab:hover:not(.active){color:var(--text);}
 
@@ -56,21 +61,27 @@
   .panel.active{display:block;}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;}
 
-  textarea,input[type=text],input[type=password],input[type=number]{
-    background:var(--bg);border:1px solid var(--border);border-radius:6px;
-    color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.2s;}
+  textarea,input[type=text]{background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.2s;width:100%;}
   textarea:focus,input:focus{border-color:var(--accent);}
   textarea::placeholder,input::placeholder{color:var(--muted);}
-  textarea{width:100%;resize:vertical;min-height:64px;}
-  input[type=text],input[type=password]{width:100%;}
+  textarea{resize:vertical;min-height:64px;}
 
   .input-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
-  .input-row textarea{flex:1;min-width:200px;}
+  .input-row textarea,.input-row input{flex:1;min-width:200px;}
 
-  button.primary{background:var(--accent);color:#000;border:none;border-radius:6px;font-family:var(--font-mono);font-weight:600;font-size:12px;letter-spacing:0.08em;padding:10px 20px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:opacity 0.2s,transform 0.1s;}
-  button.primary:hover{opacity:0.85;}button.primary:active{transform:scale(0.97);}button.primary:disabled{opacity:0.4;cursor:not-allowed;}
-  button.secondary{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:6px;font-family:var(--font-mono);font-weight:600;font-size:11px;letter-spacing:0.08em;padding:8px 16px;cursor:pointer;text-transform:uppercase;transition:opacity 0.2s;}
-  button.secondary:hover{opacity:0.7;}
+  button.primary{background:var(--accent);color:#000;border:none;border-radius:6px;font-family:var(--font-mono);
+    font-weight:600;font-size:12px;letter-spacing:0.08em;padding:10px 20px;cursor:pointer;text-transform:uppercase;
+    white-space:nowrap;transition:opacity 0.2s,transform 0.1s;}
+  button.primary:hover{opacity:0.85;}button.primary:active{transform:scale(0.97);}
+  button.primary:disabled{opacity:0.4;cursor:not-allowed;}
+  button.sec{background:transparent;color:var(--accent);border:1px solid rgba(0,229,255,0.4);border-radius:6px;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;padding:6px 14px;cursor:pointer;
+    text-transform:uppercase;transition:opacity 0.2s;white-space:nowrap;}
+  button.sec:hover{opacity:0.7;}
+
+  .warn{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:6px;
+    padding:12px 16px;font-size:11px;color:var(--yellow);line-height:1.6;margin-bottom:16px;}
 
   .verdict-banner{border-radius:8px;padding:28px;text-align:center;margin-bottom:16px;border:1px solid;position:relative;overflow:hidden;}
   .verdict-banner::before{content:'';position:absolute;inset:0;opacity:0.06;background:currentColor;}
@@ -81,34 +92,35 @@
   .verdict-text{font-family:var(--font-sans);font-size:40px;font-weight:700;}
   .verdict-meta{margin-top:10px;font-size:11px;opacity:0.6;letter-spacing:0.05em;}
 
-  .claim-id-badge{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;color:var(--muted);margin-bottom:12px;letter-spacing:0.06em;}
+  .badge{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;
+    padding:3px 10px;font-size:11px;color:var(--muted);margin-bottom:12px;}
+  .tx-box{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;}
+  .tx-lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .tx-val{font-size:11px;color:var(--accent);word-break:break-all;}
 
-  .tx-info{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;}
-  .tx-info .tx-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-  .tx-info .tx-hash{font-size:11px;color:var(--accent);word-break:break-all;}
+  .step-list{margin-top:10px;}
+  .step{font-size:11px;padding:3px 0;opacity:0;animation:fi 0.3s forwards;}
+  .step.ok{color:var(--green);}
+  .step.run{color:var(--accent);}
+  .step.fail{color:var(--red);}
+  @keyframes fi{to{opacity:1;}}
 
-  .history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
-  .history-item:hover .history-claim{color:var(--accent);}
-  .history-id{font-size:11px;color:var(--muted);min-width:28px;}
-  .history-claim{font-size:12px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.15s;}
-  .history-verdict{font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
-  .history-verdict.TRUE{background:rgba(34,197,94,0.15);color:var(--green);}
-  .history-verdict.FALSE{background:rgba(239,68,68,0.15);color:var(--red);}
-  .history-verdict.UNVERIFIABLE{background:rgba(245,158,11,0.15);color:var(--yellow);}
-  .history-date{font-size:10px;color:var(--muted);white-space:nowrap;}
-
-  .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:8px;}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);
+    border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:6px;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .step-list{margin-top:8px;}
-  .step{font-size:11px;color:var(--muted);padding:3px 0;opacity:0;animation:fadeIn 0.4s forwards;}
-  .step.done{color:var(--green);}
-  .step.active{color:var(--accent);}
-  @keyframes fadeIn{to{opacity:1;}}
-  .msg{font-size:12px;color:var(--muted);padding:10px 0;}
-  .msg.error{color:var(--red);}
-  .section-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 
-  .warning-note{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:12px 16px;font-size:11px;color:var(--yellow);line-height:1.6;margin-bottom:16px;}
+  .msg{font-size:12px;color:var(--muted);padding:8px 0;}
+  .msg.err{color:var(--red);}
+  .sec-lbl{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+
+  .hist-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+  .hist-item:hover .hist-claim{color:var(--accent);}
+  .hist-id{font-size:11px;color:var(--muted);min-width:28px;}
+  .hist-claim{font-size:12px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.15s;}
+  .hist-v{font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+  .hist-v.TRUE{background:rgba(34,197,94,0.15);color:var(--green);}
+  .hist-v.FALSE{background:rgba(239,68,68,0.15);color:var(--red);}
+  .hist-v.UNVERIFIABLE{background:rgba(245,158,11,0.15);color:var(--yellow);}
 </style>
 </head>
 <body>
@@ -122,24 +134,28 @@
   </p>
 </header>
 
-<div class="network-bar">
-  <div class="net-dot" id="netDot"></div>
-  <span class="net-label">Contract</span>
-  <span class="net-addr" id="netAddr">0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69</span>
-  <span class="net-status" id="netStatus">Initializing...</span>
-  <button class="secondary" onclick="initClient()" id="reconnectBtn" style="display:none">Reconnect</button>
+<!-- Contract bar -->
+<div class="bar">
+  <div class="bar-row">
+    <div class="dot" id="netDot"></div>
+    <span class="lbl">Contract</span>
+    <span class="val accent" id="netAddr">0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69</span>
+    <span style="font-size:11px;color:var(--muted)" id="netStatus">Initializing...</span>
+    <button class="sec" onclick="initClient()" id="reconnectBtn" style="display:none">Reconnect</button>
+  </div>
 </div>
 
-<div class="network-bar" id="accountBar" style="margin-top:-10px;flex-direction:column;align-items:flex-start;gap:8px;">
-  <div style="display:flex;align-items:center;gap:10px;width:100%;flex-wrap:wrap;">
-    <span class="net-label">Your address</span>
-    <span class="net-addr" id="accountAddr" style="color:var(--text)">generating...</span>
-    <button class="secondary" onclick="copyAddr()" style="margin-left:auto">Copy</button>
-    <button class="secondary" onclick="resetAccount()">New key</button>
+<!-- Account bar -->
+<div class="bar">
+  <div class="bar-row">
+    <span class="lbl">Your wallet</span>
+    <span class="val" id="accountAddr">generating...</span>
+    <button class="sec" onclick="copyAddr()">Copy</button>
+    <button class="sec" onclick="resetAccount()">New key</button>
   </div>
-  <div id="fundHint" style="font-size:11px;color:var(--yellow);display:none;">
-    ⚠ Баланс 0 GEN — скопируй адрес и нажми 💧 в GenLayer Studio для пополнения, затем нажми
-    <span onclick="initClient()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Reconnect</span>
+  <div class="hint" id="fundHint">
+    ⚠ Баланс 0 GEN — скопируй адрес выше и нажми 💧 в GenLayer Studio, затем
+    <a onclick="initClient()">Reconnect</a>
   </div>
 </div>
 
@@ -155,12 +171,9 @@
   <button class="tab" onclick="switchTab('history')">history</button>
 </div>
 
-<!-- CHECK CLAIM -->
 <div class="panel active" id="panel-check">
   <div class="card">
-    <div class="warning-note">
-      ⚡ <strong>Write operation</strong> — транзакция идёт через GenLayer валидаторов. Ожидание ~30-120 сек пока консенсус достигнут.
-    </div>
+    <div class="warn">⚡ Write operation — реальная транзакция через GenLayer валидаторов. Ожидание ~30-120 сек.</div>
     <div class="input-row">
       <textarea id="claimInput" placeholder="Введи утверждение для проверки..." rows="2"></textarea>
       <button class="primary" id="checkBtn" onclick="runCheck()">▶ Run</button>
@@ -170,406 +183,277 @@
   <div id="checkResults"></div>
 </div>
 
-<!-- GET VERDICT -->
 <div class="panel" id="panel-get">
   <div class="card">
     <div class="input-row">
-      <input type="text" id="getIdInput" placeholder="claim_id (например: 0, 1, 2...)" style="flex:1;min-width:150px" />
+      <input type="text" id="getIdInput" placeholder="claim_id (например: 0, 1, 2...)" />
       <button class="primary" onclick="getVerdict()">▶ Get</button>
     </div>
   </div>
   <div id="getResult"></div>
 </div>
 
-<!-- HISTORY -->
 <div class="panel" id="panel-history">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div class="section-label">checks[ ] — все сохранённые проверки (из контракта)</div>
-      <button class="secondary" onclick="loadHistory()">↻ Refresh</button>
+      <div class="sec-lbl">checks[ ] — все проверки из контракта</div>
+      <button class="sec" onclick="loadHistory()">↻ Refresh</button>
     </div>
     <div id="historyList"><div class="msg">Загрузка...</div></div>
   </div>
 </div>
 
 <script type="module">
-// ═══════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════
-const CONTRACT_ADDRESS = '0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69';
-const STUDIONET_RPC    = 'https://studio.genlayer.com/api';
-const CALLER_ADDRESS   = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; // default Studio account
+// ─── CONFIG ──────────────────────────────────────
+const CONTRACT = '0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69';
+const PK_KEY   = 'gl_fc_pk_v2';
 
-const STORAGE_KEY_PK = 'gl_fact_checker_pk';
-
-// ═══════════════════════════════════════════════
-// SDK IMPORT
-// ═══════════════════════════════════════════════
-import { createClient, createAccount } from 'genlayer-js';
-import { studionet } from 'genlayer-js/chains';
+// ─── IMPORTS (verified against actual npm package) ─
+import { createClient, createAccount, generatePrivateKey, chains } from 'genlayer-js';
 import { TransactionStatus } from 'genlayer-js/types';
 
-// Make TransactionStatus globally accessible
 window.TransactionStatus = TransactionStatus;
 
-let glClient = null;
-let glAccount = null;
+let client  = null;
+let account = null;
 
-// ═══════════════════════════════════════════════
-// ACCOUNT MANAGEMENT
-// ═══════════════════════════════════════════════
-function loadOrCreateAccount() {
-  let pk = localStorage.getItem(STORAGE_KEY_PK);
+// ─── ACCOUNT ─────────────────────────────────────
+function getOrCreatePK() {
+  let pk = localStorage.getItem(PK_KEY);
   if (!pk) {
-    // Generate random 32-byte private key
-    const bytes = crypto.getRandomValues(new Uint8Array(32));
-    pk = '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
-    localStorage.setItem(STORAGE_KEY_PK, pk);
+    pk = generatePrivateKey(); // returns '0x...' string
+    localStorage.setItem(PK_KEY, pk);
   }
-  return createAccount(pk);
+  return pk;
 }
 
-window.resetAccount = function() {
+window.resetAccount = () => {
   if (!confirm('Создать новый ключ? Старый адрес потеряет привязку.')) return;
-  localStorage.removeItem(STORAGE_KEY_PK);
+  localStorage.removeItem(PK_KEY);
   location.reload();
 };
 
-window.copyAddr = function() {
+window.copyAddr = () => {
   const addr = document.getElementById('accountAddr').textContent;
   navigator.clipboard.writeText(addr).then(() => {
-    const btn = event.target;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 1500);
+    event.target.textContent = 'Copied!';
+    setTimeout(() => event.target.textContent = 'Copy', 1500);
   });
 };
 
-// ═══════════════════════════════════════════════
-// INIT CLIENT
-// ═══════════════════════════════════════════════
+// ─── INIT ─────────────────────────────────────────
 window.initClient = async function() {
+  setNet('Connecting...', null);
   try {
-    setNetStatus('Connecting...', false);
+    const pk = getOrCreatePK();
+    account  = createAccount(pk);          // createAccount(privateKeyHex)
+    document.getElementById('accountAddr').textContent = account.address;
 
-    glAccount = loadOrCreateAccount();
-    document.getElementById('accountAddr').textContent = glAccount.address;
+    client = createClient({ chain: chains.studionet, account });
 
-    glClient = createClient({
-      chain: studionet,
-      account: glAccount,
-    });
-
-    // Test connection — read contract count
-    const count = await glClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_count',
-      args: [],
+    // Verify: read contract
+    const count = await client.readContract({
+      address: CONTRACT, functionName: 'get_count', args: [],
     });
 
     // Check balance
     let bal = 0n;
-    try {
-      bal = await glClient.getBalance({ address: glAccount.address });
-    } catch {}
+    try { bal = await client.getBalance({ address: account.address }); } catch {}
 
-    const hasBalance = bal > 0n;
-    document.getElementById('fundHint').style.display = hasBalance ? 'none' : 'block';
-
-    setNetStatus(`Connected · count=${count}${hasBalance ? '' : ' · ⚠ no balance'}`, true);
+    const hasBal = bal > 0n;
+    document.getElementById('fundHint').style.display = hasBal ? 'none' : 'block';
     document.getElementById('reconnectBtn').style.display = 'none';
-    await updateStats();
 
+    setNet(`Connected · count=${count}${hasBal ? '' : ' · ⚠ no balance'}`, true);
+    await updateStats();
   } catch(e) {
     console.error('Init error:', e);
-    setNetStatus('Error: ' + e.message.slice(0, 60), false);
+    setNet('Error: ' + e.message.slice(0, 70), false);
     document.getElementById('reconnectBtn').style.display = 'inline-block';
   }
 };
 
-function setNetStatus(msg, ok) {
+function setNet(msg, ok) {
   document.getElementById('netStatus').textContent = msg;
-  document.getElementById('netDot').className = 'net-dot' + (ok ? ' connected' : '');
+  const dot = document.getElementById('netDot');
+  dot.className = 'dot' + (ok === true ? ' ok' : ok === false ? ' err' : '');
 }
 
-// ═══════════════════════════════════════════════
-// STATS
-// ═══════════════════════════════════════════════
+// ─── STATS ────────────────────────────────────────
 async function updateStats() {
   try {
-    const count = await glClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_count',
-      args: [],
-    });
+    const count = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
     const total = Number(count);
     document.getElementById('statCount').textContent = total;
-
-    // Scan verdicts from contract
-    let trueCount = 0, falseCount = 0;
+    let t = 0, f = 0;
     for (let i = 0; i < Math.min(total, 50); i++) {
       try {
-        const raw = await glClient.readContract({
-          address: CONTRACT_ADDRESS,
-          functionName: 'get_verdict',
-          args: [String(i)],
-        });
+        const raw = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [String(i)] });
         if (raw && raw !== 'NOT_FOUND') {
-          const verdict = raw.includes('||') ? raw.split('||')[1] : raw;
-          if (verdict.trim() === 'TRUE') trueCount++;
-          if (verdict.trim() === 'FALSE') falseCount++;
+          const v = raw.includes('||') ? raw.split('||')[1].trim() : raw.trim();
+          if (v === 'TRUE')  t++;
+          if (v === 'FALSE') f++;
         }
       } catch {}
     }
-    document.getElementById('statTrue').textContent  = trueCount;
-    document.getElementById('statFalse').textContent = falseCount;
-  } catch(e) {
-    console.warn('Stats error:', e);
-  }
+    document.getElementById('statTrue').textContent  = t;
+    document.getElementById('statFalse').textContent = f;
+  } catch(e) { console.warn('stats:', e); }
 }
 
-// ═══════════════════════════════════════════════
-// CHECK CLAIM (write)
-// ═══════════════════════════════════════════════
+// ─── CHECK CLAIM ──────────────────────────────────
 window.runCheck = async function() {
-  if (!glClient) { alert('Клиент не инициализирован, подождите или нажмите Reconnect'); return; }
-
+  if (!client) { alert('Клиент не готов, подожди или нажми Reconnect'); return; }
   const claim = document.getElementById('claimInput').value.trim();
   if (!claim) return;
 
   const btn    = document.getElementById('checkBtn');
   const status = document.getElementById('checkStatus');
   const results = document.getElementById('checkResults');
-
   btn.disabled = true;
   results.innerHTML = '';
-
-  status.innerHTML = `
-    <div class="card">
-      <div style="text-align:center;margin-bottom:12px">
-        <span class="spinner"></span>
-        <span style="font-size:12px;color:var(--muted)">Отправляем транзакцию в GenLayer...</span>
-      </div>
-      <div class="step-list" id="stepList"></div>
-    </div>`;
-
-  addStep('Sending check_claim transaction...', 'active');
+  status.innerHTML = `<div class="card" style="text-align:center">
+    <span class="spinner"></span><span style="font-size:12px;color:var(--muted)">Отправляем транзакцию...</span>
+    <div class="step-list" id="steps"></div></div>`;
 
   try {
-    // 1. Send write transaction
-    const txHash = await glClient.writeContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'check_claim',
-      args: [claim],
-      value: BigInt(0),
+    step('Sending check_claim...', 'run');
+
+    const txHash = await client.writeContract({
+      address: CONTRACT, functionName: 'check_claim', args: [claim], value: BigInt(0),
     });
 
-    addStep(`TX sent: ${txHash.slice(0,16)}...`, 'done');
-    addStep('Waiting for validator consensus (ACCEPTED)...', 'active');
+    step('TX: ' + txHash.slice(0,20) + '...', 'ok');
+    step('Waiting for validator consensus (ACCEPTED)...', 'run');
 
-    // 2. Wait for ACCEPTED
-    const receipt = await glClient.waitForTransactionReceipt({
+    await client.waitForTransactionReceipt({
       hash: txHash,
       status: TransactionStatus.ACCEPTED,
       interval: 3000,
       retries: 60,
     });
 
-    addStep('Consensus reached ✓', 'done');
-    addStep('Reading verdict from contract...', 'active');
+    step('Consensus reached ✓', 'ok');
+    step('Reading verdict...', 'run');
 
-    // 3. Get the new claim_id = count - 1
-    const newCount = await glClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_count',
-      args: [],
-    });
-    const claimId = String(Number(newCount) - 1);
+    const newCount = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
+    const claimId  = String(Number(newCount) - 1);
+    const raw      = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [claimId] });
 
-    // 4. Read verdict
-    const rawVerdict = await glClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_verdict',
-      args: [claimId],
-    });
+    step('Done ✓', 'ok');
 
-    addStep('Verdict received ✓', 'done');
-
-    // Parse "claim||verdict"
-    let finalVerdict = 'UNVERIFIABLE';
-    if (rawVerdict && rawVerdict !== 'NOT_FOUND') {
-      const parts = rawVerdict.split('||');
-      finalVerdict = (parts[1] || parts[0]).trim().toUpperCase();
-      if (!['TRUE','FALSE','UNVERIFIABLE'].includes(finalVerdict)) finalVerdict = 'UNVERIFIABLE';
+    let verdict = 'UNVERIFIABLE';
+    if (raw && raw !== 'NOT_FOUND') {
+      const v = (raw.includes('||') ? raw.split('||')[1] : raw).trim().toUpperCase();
+      if (['TRUE','FALSE','UNVERIFIABLE'].includes(v)) verdict = v;
     }
 
     status.innerHTML = '';
-    results.innerHTML = buildResults(claimId, claim, finalVerdict, txHash);
+    results.innerHTML = `
+      <div class="badge">checks["${claimId}"] = "${esc(claim)}||${verdict}"</div>
+      <div class="verdict-banner ${verdict}">
+        <div class="verdict-label">GenLayer Consensus Verdict</div>
+        <div class="verdict-text">${verdict}</div>
+        <div class="verdict-meta">claim_id: ${claimId} · реальный консенсус валидаторов</div>
+      </div>
+      <div class="tx-box"><div class="tx-lbl">Transaction Hash</div><div class="tx-val">${txHash}</div></div>`;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     await updateStats();
 
   } catch(e) {
     status.innerHTML = '';
-    results.innerHTML = `<div class="msg error">Ошибка: ${escHtml(e.message)}</div>`;
+    results.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
     console.error(e);
   }
-
   btn.disabled = false;
 };
 
-function addStep(text, cls) {
-  const el = document.getElementById('stepList');
+function step(text, cls) {
+  const el = document.getElementById('steps');
   if (!el) return;
-  // Update last active → done
-  el.querySelectorAll('.step.active').forEach(s => {
-    s.classList.remove('active');
-    s.classList.add('done');
-    s.textContent = '✓ ' + s.textContent.replace('...','');
-  });
+  el.querySelectorAll('.step.run').forEach(s => { s.className = 'step ok'; s.textContent = '✓ ' + s.textContent.replace(/^→ /,''); });
   const s = document.createElement('div');
   s.className = `step ${cls}`;
-  s.textContent = (cls === 'done' ? '✓ ' : '→ ') + text;
-  s.style.animationDelay = '0s';
+  s.textContent = (cls === 'ok' ? '✓ ' : '→ ') + text;
   el.appendChild(s);
 }
 
-function buildResults(claimId, claim, verdict, txHash) {
-  return `
-    <div class="claim-id-badge">checks["${claimId}"] = "${escHtml(claim)}||${verdict}"</div>
-    <div class="verdict-banner ${verdict}">
-      <div class="verdict-label">GenLayer Consensus Verdict</div>
-      <div class="verdict-text">${verdict}</div>
-      <div class="verdict-meta">claim_id: ${claimId} · реальный консенсус валидаторов</div>
-    </div>
-    <div class="tx-info">
-      <div class="tx-label">Transaction Hash</div>
-      <div class="tx-hash">${txHash}</div>
-    </div>`;
-}
-
-// ═══════════════════════════════════════════════
-// GET VERDICT (read)
-// ═══════════════════════════════════════════════
+// ─── GET VERDICT ──────────────────────────────────
 window.getVerdict = async function() {
-  if (!glClient) { alert('Клиент не инициализирован'); return; }
-
+  if (!client) { alert('Клиент не готов'); return; }
   const id  = document.getElementById('getIdInput').value.trim();
   const out = document.getElementById('getResult');
-  if (!id) { out.innerHTML = '<div class="msg error">Введи claim_id</div>'; return; }
-
+  if (!id) { out.innerHTML = '<div class="msg err">Введи claim_id</div>'; return; }
   out.innerHTML = '<div class="msg"><span class="spinner"></span>Читаем контракт...</div>';
-
   try {
-    const raw = await glClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_verdict',
-      args: [id],
-    });
-
+    const raw = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [id] });
     if (!raw || raw === 'NOT_FOUND') {
-      out.innerHTML = `<div class="msg error">NOT_FOUND — checks["${escHtml(id)}"] не существует</div>`;
+      out.innerHTML = `<div class="msg err">NOT_FOUND — checks["${esc(id)}"] не существует</div>`;
       return;
     }
-
-    const parts   = raw.split('||');
-    const claimTxt = parts.length > 1 ? parts[0] : '(unknown)';
-    const verdict  = (parts.length > 1 ? parts[1] : parts[0]).trim().toUpperCase();
-    const v        = ['TRUE','FALSE','UNVERIFIABLE'].includes(verdict) ? verdict : 'UNVERIFIABLE';
-
+    const parts = raw.split('||');
+    const v = (['TRUE','FALSE','UNVERIFIABLE'].includes((parts[1]||'').trim().toUpperCase()))
+      ? parts[1].trim().toUpperCase() : 'UNVERIFIABLE';
     out.innerHTML = `
-      <div class="claim-id-badge">get_verdict("${escHtml(id)}")</div>
+      <div class="badge">get_verdict("${esc(id)}")</div>
       <div class="verdict-banner ${v}">
-        <div class="verdict-label">Сохранённый вердикт · GenLayer</div>
+        <div class="verdict-label">Вердикт из контракта</div>
         <div class="verdict-text">${v}</div>
-        <div class="verdict-meta">claim_id: ${escHtml(id)}</div>
+        <div class="verdict-meta">claim_id: ${esc(id)}</div>
       </div>
-      <div class="card">
-        <div class="section-label">checks["${escHtml(id)}"] raw</div>
-        <div style="font-size:12px;color:var(--muted);word-break:break-all">"${escHtml(raw)}"</div>
-      </div>`;
+      <div class="card"><div class="sec-lbl">raw</div>
+        <div style="font-size:12px;color:var(--muted);word-break:break-all">"${esc(raw)}"</div></div>`;
   } catch(e) {
-    out.innerHTML = `<div class="msg error">Ошибка: ${escHtml(e.message)}</div>`;
+    out.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
   }
 };
 
-// ═══════════════════════════════════════════════
-// HISTORY
-// ═══════════════════════════════════════════════
+// ─── HISTORY ─────────────────────────────────────
 window.loadHistory = async function() {
-  if (!glClient) return;
+  if (!client) return;
   const el = document.getElementById('historyList');
   el.innerHTML = '<div class="msg"><span class="spinner"></span>Загружаем из контракта...</div>';
-
   try {
-    const count = await glClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_count',
-      args: [],
-    });
+    const count = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
     const total = Number(count);
-
-    if (total === 0) {
-      el.innerHTML = '<div class="msg">Проверок пока нет.</div>';
-      return;
-    }
-
+    if (total === 0) { el.innerHTML = '<div class="msg">Проверок пока нет.</div>'; return; }
     const items = [];
     for (let i = total - 1; i >= 0; i--) {
       try {
-        const raw = await glClient.readContract({
-          address: CONTRACT_ADDRESS,
-          functionName: 'get_verdict',
-          args: [String(i)],
-        });
+        const raw = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [String(i)] });
         if (raw && raw !== 'NOT_FOUND') {
-          const parts   = raw.split('||');
-          const claim   = parts.length > 1 ? parts[0] : raw;
-          const verdict = (parts.length > 1 ? parts[1] : raw).trim().toUpperCase();
-          const v       = ['TRUE','FALSE','UNVERIFIABLE'].includes(verdict) ? verdict : 'UNVERIFIABLE';
-          items.push({ id: i, claim, verdict: v });
+          const parts = raw.split('||');
+          const claim = parts[0] || raw;
+          const v     = (['TRUE','FALSE','UNVERIFIABLE'].includes((parts[1]||'').trim().toUpperCase()))
+            ? parts[1].trim().toUpperCase() : 'UNVERIFIABLE';
+          items.push({ id: i, claim, v });
         }
       } catch {}
     }
-
-    if (!items.length) {
-      el.innerHTML = '<div class="msg">Нет данных.</div>';
-      return;
-    }
-
-    el.innerHTML = items.map(it => `
-      <div class="history-item" onclick="jumpToVerdict('${it.id}')">
-        <span class="history-id">#${it.id}</span>
-        <span class="history-claim" title="${escHtml(it.claim)}">${escHtml(it.claim)}</span>
-        <span class="history-verdict ${it.verdict}">${it.verdict}</span>
-      </div>`).join('');
+    el.innerHTML = items.length
+      ? items.map(it => `<div class="hist-item" onclick="jumpTo('${it.id}')">
+          <span class="hist-id">#${it.id}</span>
+          <span class="hist-claim" title="${esc(it.claim)}">${esc(it.claim)}</span>
+          <span class="hist-v ${it.v}">${it.v}</span>
+        </div>`).join('')
+      : '<div class="msg">Нет данных.</div>';
   } catch(e) {
-    el.innerHTML = `<div class="msg error">Ошибка загрузки: ${escHtml(e.message)}</div>`;
+    el.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
   }
 };
 
-// ═══════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════
-window.switchTab = function(name) {
-  ['check','get','history'].forEach((t, i) => {
-    document.querySelectorAll('.tab')[i].classList.toggle('active', t === name);
-    document.getElementById('panel-' + t).classList.toggle('active', t === name);
+// ─── UTILS ───────────────────────────────────────
+window.switchTab = n => {
+  ['check','get','history'].forEach((t,i) => {
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t===n);
+    document.getElementById('panel-'+t).classList.toggle('active', t===n);
   });
-  if (name === 'history') loadHistory();
+  if (n === 'history') loadHistory();
 };
+window.jumpTo = id => { switchTab('get'); document.getElementById('getIdInput').value = id; getVerdict(); };
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-window.jumpToVerdict = function(id) {
-  switchTab('get');
-  document.getElementById('getIdInput').value = id;
-  getVerdict();
-};
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ═══════════════════════════════════════════════
-// KEYBOARD
-// ═══════════════════════════════════════════════
+// ─── BOOT ────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('claimInput').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runCheck(); }
