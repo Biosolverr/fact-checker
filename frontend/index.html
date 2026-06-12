@@ -221,11 +221,12 @@ let glAccount = null;
 function loadOrCreateAccount() {
   let pk = localStorage.getItem(STORAGE_KEY_PK);
   if (!pk) {
-    const fresh = createAccount();
-    pk = fresh.privateKey;
+    // Generate random 32-byte private key
+    const bytes = crypto.getRandomValues(new Uint8Array(32));
+    pk = '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
     localStorage.setItem(STORAGE_KEY_PK, pk);
   }
-  return createAccount({ privateKey: pk });
+  return createAccount(pk);
 }
 
 window.resetAccount = function() {
