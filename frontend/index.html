@@ -33,7 +33,6 @@
   h1 span{color:var(--accent);}
   .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;}
   code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;color:var(--accent);}
-
   .bar{max-width:780px;margin:0 auto 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;}
   .bar-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s;}
@@ -44,32 +43,26 @@
   .val.accent{color:var(--accent);}
   .hint{font-size:11px;color:var(--yellow);margin-top:8px;line-height:1.5;display:none;}
   .hint a{color:var(--accent);cursor:pointer;text-decoration:underline;}
-
   .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:780px;margin:0 auto 24px;}
   .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
   .stat-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
   .stat-val{font-size:24px;font-weight:700;font-family:var(--font-sans);color:#fff;}
   .stat-val.green{color:var(--green);}.stat-val.red{color:var(--red);}
-
   .tabs{max-width:780px;margin:0 auto;display:flex;gap:2px;border-bottom:1px solid var(--border);}
   .tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:var(--font-mono);
     font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color 0.15s;}
   .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
   .tab:hover:not(.active){color:var(--text);}
-
   .panel{display:none;max-width:780px;margin:0 auto;padding-top:24px;}
   .panel.active{display:block;}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;}
-
   textarea,input[type=text]{background:var(--bg);border:1px solid var(--border);border-radius:6px;
     color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.2s;width:100%;}
   textarea:focus,input:focus{border-color:var(--accent);}
   textarea::placeholder,input::placeholder{color:var(--muted);}
   textarea{resize:vertical;min-height:64px;}
-
   .input-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
   .input-row textarea,.input-row input{flex:1;min-width:200px;}
-
   button.primary{background:var(--accent);color:#000;border:none;border-radius:6px;font-family:var(--font-mono);
     font-weight:600;font-size:12px;letter-spacing:0.08em;padding:10px 20px;cursor:pointer;text-transform:uppercase;
     white-space:nowrap;transition:opacity 0.2s,transform 0.1s;}
@@ -79,10 +72,8 @@
     font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;padding:6px 14px;cursor:pointer;
     text-transform:uppercase;transition:opacity 0.2s;white-space:nowrap;}
   button.sec:hover{opacity:0.7;}
-
   .warn{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:6px;
     padding:12px 16px;font-size:11px;color:var(--yellow);line-height:1.6;margin-bottom:16px;}
-
   .verdict-banner{border-radius:8px;padding:28px;text-align:center;margin-bottom:16px;border:1px solid;position:relative;overflow:hidden;}
   .verdict-banner::before{content:'';position:absolute;inset:0;opacity:0.06;background:currentColor;}
   .verdict-banner.TRUE{border-color:var(--green);color:var(--green);}
@@ -91,28 +82,23 @@
   .verdict-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;margin-bottom:8px;}
   .verdict-text{font-family:var(--font-sans);font-size:40px;font-weight:700;}
   .verdict-meta{margin-top:10px;font-size:11px;opacity:0.6;letter-spacing:0.05em;}
-
   .badge{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;
     padding:3px 10px;font-size:11px;color:var(--muted);margin-bottom:12px;}
   .tx-box{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;}
   .tx-lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
   .tx-val{font-size:11px;color:var(--accent);word-break:break-all;}
-
   .step-list{margin-top:10px;}
   .step{font-size:11px;padding:3px 0;opacity:0;animation:fi 0.3s forwards;}
   .step.ok{color:var(--green);}
   .step.run{color:var(--accent);}
   .step.fail{color:var(--red);}
   @keyframes fi{to{opacity:1;}}
-
   .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);
     border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:6px;}
   @keyframes spin{to{transform:rotate(360deg);}}
-
   .msg{font-size:12px;color:var(--muted);padding:8px 0;}
   .msg.err{color:var(--red);}
   .sec-lbl{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-
   .hist-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
   .hist-item:hover .hist-claim{color:var(--accent);}
   .hist-id{font-size:11px;color:var(--muted);min-width:28px;}
@@ -209,36 +195,27 @@ const CONTRACT = '0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69';
 // ─── IMPORTS ──────────────────────────────────────
 import { createClient, createAccount, chains } from 'genlayer-js';
 import { TransactionStatus } from 'genlayer-js/types';
-
 window.TransactionStatus = TransactionStatus;
-
 const PRIVATE_KEY = '0xf1cd19a2c205131c7a8ea1c367cbedd6028a8f58c002cbfa661eef158dff203a';
-
 let client  = null;
 let account = null;
-
 // ─── INIT ─────────────────────────────────────────
 window.initClient = async function() {
   setNet('Connecting...', null);
   try {
     account = createAccount(PRIVATE_KEY);
     document.getElementById('accountAddr').textContent = account.address;
-
     client = createClient({ chain: chains.studionet, account });
-
     // Verify: read contract
     const count = await client.readContract({
       address: CONTRACT, functionName: 'get_count', args: [],
     });
-
     // Check balance
     let bal = 0n;
     try { bal = await client.getBalance({ address: account.address }); } catch {}
-
     const hasBal = bal > 0n;
     document.getElementById('fundHint').style.display = hasBal ? 'none' : 'block';
     document.getElementById('reconnectBtn').style.display = 'none';
-
     setNet(`Connected · count=${count}${hasBal ? '' : ' · ⚠ no balance'}`, true);
     await updateStats();
   } catch(e) {
@@ -247,13 +224,11 @@ window.initClient = async function() {
     document.getElementById('reconnectBtn').style.display = 'inline-block';
   }
 };
-
 function setNet(msg, ok) {
   document.getElementById('netStatus').textContent = msg;
   const dot = document.getElementById('netDot');
   dot.className = 'dot' + (ok === true ? ' ok' : ok === false ? ' err' : '');
 }
-
 // ─── STATS ────────────────────────────────────────
 async function updateStats() {
   try {
@@ -275,13 +250,11 @@ async function updateStats() {
     document.getElementById('statFalse').textContent = f;
   } catch(e) { console.warn('stats:', e); }
 }
-
 // ─── CHECK CLAIM ──────────────────────────────────
 window.runCheck = async function() {
   if (!client) { alert('Клиент не готов, подожди или нажми Reconnect'); return; }
   const claim = document.getElementById('claimInput').value.trim();
   if (!claim) return;
-
   const btn    = document.getElementById('checkBtn');
   const status = document.getElementById('checkStatus');
   const results = document.getElementById('checkResults');
@@ -290,39 +263,30 @@ window.runCheck = async function() {
   status.innerHTML = `<div class="card" style="text-align:center">
     <span class="spinner"></span><span style="font-size:12px;color:var(--muted)">Отправляем транзакцию...</span>
     <div class="step-list" id="steps"></div></div>`;
-
   try {
     step('Sending check_claim...', 'run');
-
     const txHash = await client.writeContract({
       address: CONTRACT, functionName: 'check_claim', args: [claim], value: BigInt(0),
     });
-
     step('TX: ' + txHash.slice(0,20) + '...', 'ok');
     step('Waiting for validator consensus (ACCEPTED)...', 'run');
-
     await client.waitForTransactionReceipt({
       hash: txHash,
       status: TransactionStatus.ACCEPTED,
       interval: 3000,
       retries: 60,
     });
-
     step('Consensus reached ✓', 'ok');
     step('Reading verdict...', 'run');
-
     const newCount = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
     const claimId  = String(Number(newCount) - 1);
     const raw      = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [claimId] });
-
     step('Done ✓', 'ok');
-
     let verdict = 'UNVERIFIABLE';
     if (raw && raw !== 'NOT_FOUND') {
       const v = (raw.includes('||') ? raw.split('||')[1] : raw).trim().toUpperCase();
       if (['TRUE','FALSE','UNVERIFIABLE'].includes(v)) verdict = v;
     }
-
     status.innerHTML = '';
     results.innerHTML = `
       <div class="badge">checks["${claimId}"] = "${esc(claim)}||${verdict}"</div>
@@ -334,7 +298,6 @@ window.runCheck = async function() {
       <div class="tx-box"><div class="tx-lbl">Transaction Hash</div><div class="tx-val">${txHash}</div></div>`;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     await updateStats();
-
   } catch(e) {
     status.innerHTML = '';
     results.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
@@ -342,7 +305,6 @@ window.runCheck = async function() {
   }
   btn.disabled = false;
 };
-
 function step(text, cls) {
   const el = document.getElementById('steps');
   if (!el) return;
@@ -352,7 +314,6 @@ function step(text, cls) {
   s.textContent = (cls === 'ok' ? '✓ ' : '→ ') + text;
   el.appendChild(s);
 }
-
 // ─── GET VERDICT ──────────────────────────────────
 window.getVerdict = async function() {
   if (!client) { alert('Клиент не готов'); return; }
@@ -382,7 +343,6 @@ window.getVerdict = async function() {
     out.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
   }
 };
-
 // ─── HISTORY ─────────────────────────────────────
 window.loadHistory = async function() {
   if (!client) return;
@@ -416,7 +376,6 @@ window.loadHistory = async function() {
     el.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
   }
 };
-
 // ─── UTILS ───────────────────────────────────────
 window.switchTab = n => {
   ['check','get','history'].forEach((t,i) => {
@@ -427,7 +386,6 @@ window.switchTab = n => {
 };
 window.jumpTo = id => { switchTab('get'); document.getElementById('getIdInput').value = id; getVerdict(); };
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
 // ─── BOOT ────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('claimInput').addEventListener('keydown', e => {
