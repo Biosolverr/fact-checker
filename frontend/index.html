@@ -149,9 +149,9 @@
 <div class="bar">
   <div class="bar-row">
     <span class="lbl">Your wallet</span>
-    <span class="val" id="accountAddr">generating...</span>
+    <span class="val" id="accountAddr">loading...</span>
     <button class="sec" onclick="copyAddr()">Copy</button>
-    <button class="sec" onclick="resetAccount()">New key</button>
+
   </div>
   <div class="hint" id="fundHint">
     ⚠ Баланс 0 GEN — скопируй адрес выше и нажми 💧 в GenLayer Studio, затем
@@ -206,47 +206,22 @@
 <script type="module">
 // ─── CONFIG ──────────────────────────────────────
 const CONTRACT = '0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69';
-const PK_KEY   = 'gl_fc_pk_v2';
-
-// ─── IMPORTS (verified against actual npm package) ─
-import { createClient, createAccount, generatePrivateKey, chains } from 'genlayer-js';
+// ─── IMPORTS ──────────────────────────────────────
+import { createClient, createAccount, chains } from 'genlayer-js';
 import { TransactionStatus } from 'genlayer-js/types';
 
 window.TransactionStatus = TransactionStatus;
 
+const PRIVATE_KEY = '0xf1cd19a2c205131c7a8ea1c367cbedd6028a8f58c002cbfa661eef158dff203a';
+
 let client  = null;
 let account = null;
-
-// ─── ACCOUNT ─────────────────────────────────────
-function getOrCreatePK() {
-  let pk = localStorage.getItem(PK_KEY);
-  if (!pk) {
-    pk = generatePrivateKey(); // returns '0x...' string
-    localStorage.setItem(PK_KEY, pk);
-  }
-  return pk;
-}
-
-window.resetAccount = () => {
-  if (!confirm('Создать новый ключ? Старый адрес потеряет привязку.')) return;
-  localStorage.removeItem(PK_KEY);
-  location.reload();
-};
-
-window.copyAddr = () => {
-  const addr = document.getElementById('accountAddr').textContent;
-  navigator.clipboard.writeText(addr).then(() => {
-    event.target.textContent = 'Copied!';
-    setTimeout(() => event.target.textContent = 'Copy', 1500);
-  });
-};
 
 // ─── INIT ─────────────────────────────────────────
 window.initClient = async function() {
   setNet('Connecting...', null);
   try {
-    const pk = getOrCreatePK();
-    account  = createAccount(pk);          // createAccount(privateKeyHex)
+    account = createAccount(PRIVATE_KEY);
     document.getElementById('accountAddr').textContent = account.address;
 
     client = createClient({ chain: chains.studionet, account });
