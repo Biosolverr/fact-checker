@@ -3,8 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Decentralized Fact Checker</title>
+<title>Decentralized Fact Checker — GenLayer</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet" />
+
+<!-- GenLayer JS SDK (ESM via CDN) -->
+<script type="importmap">
+{
+  "imports": {
+    "genlayer-js": "https://esm.sh/genlayer-js@latest",
+    "genlayer-js/chains": "https://esm.sh/genlayer-js@latest/chains",
+    "genlayer-js/types": "https://esm.sh/genlayer-js@latest/types"
+  }
+}
+</script>
+
 <style>
   :root {
     --bg:#080b0f;--surface:#0e1318;--border:#1e2832;
@@ -22,6 +34,13 @@
   .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;}
   code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;color:var(--accent);}
 
+  .network-bar{max-width:780px;margin:0 auto 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .net-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s;}
+  .net-dot.connected{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .net-label{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+  .net-addr{font-size:11px;color:var(--accent);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .net-status{font-size:11px;color:var(--muted);margin-left:auto;}
+
   .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:780px;margin:0 auto 24px;}
   .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
   .stat-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
@@ -37,21 +56,21 @@
   .panel.active{display:block;}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;}
 
-  textarea,input[type=text],input[type=password],input[type=number],select{
+  textarea,input[type=text],input[type=password],input[type=number]{
     background:var(--bg);border:1px solid var(--border);border-radius:6px;
     color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.2s;}
-  textarea:focus,input:focus,select:focus{border-color:var(--accent);}
+  textarea:focus,input:focus{border-color:var(--accent);}
   textarea::placeholder,input::placeholder{color:var(--muted);}
   textarea{width:100%;resize:vertical;min-height:64px;}
   input[type=text],input[type=password]{width:100%;}
 
   .input-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
   .input-row textarea{flex:1;min-width:200px;}
-  .settings-row{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;}
-  .setting label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
 
   button.primary{background:var(--accent);color:#000;border:none;border-radius:6px;font-family:var(--font-mono);font-weight:600;font-size:12px;letter-spacing:0.08em;padding:10px 20px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:opacity 0.2s,transform 0.1s;}
   button.primary:hover{opacity:0.85;}button.primary:active{transform:scale(0.97);}button.primary:disabled{opacity:0.4;cursor:not-allowed;}
+  button.secondary{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:6px;font-family:var(--font-mono);font-weight:600;font-size:11px;letter-spacing:0.08em;padding:8px 16px;cursor:pointer;text-transform:uppercase;transition:opacity 0.2s;}
+  button.secondary:hover{opacity:0.7;}
 
   .verdict-banner{border-radius:8px;padding:28px;text-align:center;margin-bottom:16px;border:1px solid;position:relative;overflow:hidden;}
   .verdict-banner::before{content:'';position:absolute;inset:0;opacity:0.06;background:currentColor;}
@@ -64,26 +83,9 @@
 
   .claim-id-badge{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;color:var(--muted);margin-bottom:12px;letter-spacing:0.06em;}
 
-  .votes-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-  .vote-pill{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;text-align:center;}
-  .vote-count{font-size:28px;font-weight:700;font-family:var(--font-sans);}
-  .vote-count.TRUE{color:var(--green);}.vote-count.FALSE{color:var(--red);}.vote-count.UNVERIFIABLE{color:var(--yellow);}
-  .vote-name{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
-
-  .node-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--muted);border-radius:6px;padding:16px;margin-bottom:8px;}
-  .node-card.TRUE{border-left-color:var(--green);}.node-card.FALSE{border-left-color:var(--red);}.node-card.UNVERIFIABLE{border-left-color:var(--yellow);}
-  .node-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
-  .node-id{font-size:11px;color:var(--muted);letter-spacing:0.08em;}
-  .node-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.06em;}
-  .node-badge.TRUE{background:rgba(34,197,94,0.15);color:var(--green);}
-  .node-badge.FALSE{background:rgba(239,68,68,0.15);color:var(--red);}
-  .node-badge.UNVERIFIABLE{background:rgba(245,158,11,0.15);color:var(--yellow);}
-  .node-reasoning{font-size:12px;color:var(--text);line-height:1.6;opacity:0.85;}
-  .node-confidence{margin-top:8px;font-size:10px;color:var(--muted);}
-  .conf-bar{height:2px;background:var(--border);border-radius:1px;margin-top:4px;overflow:hidden;}
-  .conf-fill{height:100%;border-radius:1px;background:var(--accent);transition:width 0.5s ease;}
-
-  .section-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .tx-info{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;}
+  .tx-info .tx-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .tx-info .tx-hash{font-size:11px;color:var(--accent);word-break:break-all;}
 
   .history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
   .history-item:hover .history-claim{color:var(--accent);}
@@ -97,38 +99,54 @@
 
   .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:8px;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .loading-steps span{display:block;font-size:11px;color:var(--muted);opacity:0;animation:fadeIn 0.3s forwards;margin-top:4px;}
-  @keyframes fadeIn{to{opacity:0.6;}}
+  .step-list{margin-top:8px;}
+  .step{font-size:11px;color:var(--muted);padding:3px 0;opacity:0;animation:fadeIn 0.4s forwards;}
+  .step.done{color:var(--green);}
+  .step.active{color:var(--accent);}
+  @keyframes fadeIn{to{opacity:1;}}
   .msg{font-size:12px;color:var(--muted);padding:10px 0;}
   .msg.error{color:var(--red);}
+  .section-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 
-  .api-bar{max-width:780px;margin:0 auto 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;}
-  .api-bar label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;}
-  .api-bar input{margin-bottom:0;}
-  .api-hint{font-size:10px;color:var(--muted);margin-top:6px;}
+  .warning-note{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:12px 16px;font-size:11px;color:var(--yellow);line-height:1.6;margin-bottom:16px;}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">⬡ GenLayer · Decentralized AI Consensus</div>
+  <div class="logo">⬡ GenLayer · Intelligent Contract · Studionet</div>
   <h1>Decentralized<br/><span>Fact Checker</span></h1>
   <p class="subtitle">
-    3 независимых validator node параллельно оценивают утверждение.<br/>
-    Консенсус по большинству. <code>check_claim</code> · <code>get_verdict(id)</code> · <code>get_count()</code>
+    Прямой вызов intelligent contract в GenLayer Studio.<br/>
+    <code>check_claim</code> → реальный консенсус валидаторов · <code>get_verdict(id)</code> · <code>get_count()</code>
   </p>
 </header>
 
-<div class="api-bar">
-  <label>Anthropic API Key</label>
-  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." />
-  <div class="api-hint">Хранится только в памяти браузера, никуда не отправляется кроме api.anthropic.com</div>
+<div class="network-bar">
+  <div class="net-dot" id="netDot"></div>
+  <span class="net-label">Contract</span>
+  <span class="net-addr" id="netAddr">0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69</span>
+  <span class="net-status" id="netStatus">Initializing...</span>
+  <button class="secondary" onclick="initClient()" id="reconnectBtn" style="display:none">Reconnect</button>
+</div>
+
+<div class="network-bar" id="accountBar" style="margin-top:-10px;flex-direction:column;align-items:flex-start;gap:8px;">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;flex-wrap:wrap;">
+    <span class="net-label">Your address</span>
+    <span class="net-addr" id="accountAddr" style="color:var(--text)">generating...</span>
+    <button class="secondary" onclick="copyAddr()" style="margin-left:auto">Copy</button>
+    <button class="secondary" onclick="resetAccount()">New key</button>
+  </div>
+  <div id="fundHint" style="font-size:11px;color:var(--yellow);display:none;">
+    ⚠ Баланс 0 GEN — скопируй адрес и нажми 💧 в GenLayer Studio для пополнения, затем нажми
+    <span onclick="initClient()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Reconnect</span>
+  </div>
 </div>
 
 <div class="stats-row">
-  <div class="stat-card"><div class="stat-label">get_count()</div><div class="stat-val" id="statCount">0</div></div>
-  <div class="stat-card"><div class="stat-label">True</div><div class="stat-val green" id="statTrue">0</div></div>
-  <div class="stat-card"><div class="stat-label">False</div><div class="stat-val red" id="statFalse">0</div></div>
+  <div class="stat-card"><div class="stat-label">get_count()</div><div class="stat-val" id="statCount">—</div></div>
+  <div class="stat-card"><div class="stat-label">True</div><div class="stat-val green" id="statTrue">—</div></div>
+  <div class="stat-card"><div class="stat-label">False</div><div class="stat-val red" id="statFalse">—</div></div>
 </div>
 
 <div class="tabs">
@@ -137,31 +155,22 @@
   <button class="tab" onclick="switchTab('history')">history</button>
 </div>
 
+<!-- CHECK CLAIM -->
 <div class="panel active" id="panel-check">
   <div class="card">
+    <div class="warning-note">
+      ⚡ <strong>Write operation</strong> — транзакция идёт через GenLayer валидаторов. Ожидание ~30-120 сек пока консенсус достигнут.
+    </div>
     <div class="input-row">
       <textarea id="claimInput" placeholder="Введи утверждение для проверки..." rows="2"></textarea>
       <button class="primary" id="checkBtn" onclick="runCheck()">▶ Run</button>
-    </div>
-    <div class="settings-row">
-      <div class="setting">
-        <label>Validator Nodes</label>
-        <input type="number" id="agentCount" value="3" min="1" max="5" style="width:70px" />
-      </div>
-      <div class="setting">
-        <label>Consensus Threshold</label>
-        <select id="threshold">
-          <option value="0.51">Simple (51%)</option>
-          <option value="0.67" selected>Supermajority (67%)</option>
-          <option value="1.0">Unanimous (100%)</option>
-        </select>
-      </div>
     </div>
   </div>
   <div id="checkStatus"></div>
   <div id="checkResults"></div>
 </div>
 
+<!-- GET VERDICT -->
 <div class="panel" id="panel-get">
   <div class="card">
     <div class="input-row">
@@ -172,233 +181,400 @@
   <div id="getResult"></div>
 </div>
 
+<!-- HISTORY -->
 <div class="panel" id="panel-history">
   <div class="card">
-    <div class="section-label">checks[ ] — все сохранённые проверки</div>
-    <div id="historyList"><div class="msg">Проверок пока нет.</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="section-label">checks[ ] — все сохранённые проверки (из контракта)</div>
+      <button class="secondary" onclick="loadHistory()">↻ Refresh</button>
+    </div>
+    <div id="historyList"><div class="msg">Загрузка...</div></div>
   </div>
 </div>
 
-<script>
-const STORAGE_KEY   = 'fc_checks_v4';
-const STORAGE_COUNT = 'fc_count_v4';
+<script type="module">
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const CONTRACT_ADDRESS = '0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69';
+const STUDIONET_RPC    = 'https://studio.genlayer.com/api';
+const CALLER_ADDRESS   = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; // default Studio account
 
-function loadStore()  { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch { return {}; } }
-function saveStore(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} }
-function getCount()   { return parseInt(localStorage.getItem(STORAGE_COUNT) || '0', 10); }
-function setCount(n)  { try { localStorage.setItem(STORAGE_COUNT, String(n)); } catch {} }
+const STORAGE_KEY_PK = 'gl_fact_checker_pk';
 
-function updateStats() {
-  const entries = Object.values(loadStore());
-  document.getElementById('statCount').textContent = entries.length;
-  document.getElementById('statTrue').textContent  = entries.filter(e => e.verdict === 'TRUE').length;
-  document.getElementById('statFalse').textContent = entries.filter(e => e.verdict === 'FALSE').length;
+// ═══════════════════════════════════════════════
+// SDK IMPORT
+// ═══════════════════════════════════════════════
+import { createClient, createAccount } from 'genlayer-js';
+import { simulator, studionet } from 'genlayer-js/chains';
+import { TransactionStatus } from 'genlayer-js/types';
+
+// Make TransactionStatus globally accessible
+window.TransactionStatus = TransactionStatus;
+
+let glClient = null;
+let glAccount = null;
+
+// ═══════════════════════════════════════════════
+// ACCOUNT MANAGEMENT
+// ═══════════════════════════════════════════════
+function loadOrCreateAccount() {
+  let pk = localStorage.getItem(STORAGE_KEY_PK);
+  if (!pk) {
+    const fresh = createAccount();
+    pk = fresh.privateKey;
+    localStorage.setItem(STORAGE_KEY_PK, pk);
+  }
+  return createAccount({ privateKey: pk });
 }
 
-function switchTab(name) {
+window.resetAccount = function() {
+  if (!confirm('Создать новый ключ? Старый адрес потеряет привязку.')) return;
+  localStorage.removeItem(STORAGE_KEY_PK);
+  location.reload();
+};
+
+window.copyAddr = function() {
+  const addr = document.getElementById('accountAddr').textContent;
+  navigator.clipboard.writeText(addr).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+};
+
+// ═══════════════════════════════════════════════
+// INIT CLIENT
+// ═══════════════════════════════════════════════
+window.initClient = async function() {
+  try {
+    setNetStatus('Connecting...', false);
+
+    glAccount = loadOrCreateAccount();
+    document.getElementById('accountAddr').textContent = glAccount.address;
+
+    glClient = createClient({
+      chain: studionet,
+      account: glAccount,
+    });
+
+    // Test connection — read contract count
+    const count = await glClient.readContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'get_count',
+      args: [],
+    });
+
+    // Check balance
+    let bal = 0n;
+    try {
+      bal = await glClient.getBalance({ address: glAccount.address });
+    } catch {}
+
+    const hasBalance = bal > 0n;
+    document.getElementById('fundHint').style.display = hasBalance ? 'none' : 'block';
+
+    setNetStatus(`Connected · count=${count}${hasBalance ? '' : ' · ⚠ no balance'}`, true);
+    document.getElementById('reconnectBtn').style.display = 'none';
+    await updateStats();
+
+  } catch(e) {
+    console.error('Init error:', e);
+    setNetStatus('Error: ' + e.message.slice(0, 60), false);
+    document.getElementById('reconnectBtn').style.display = 'inline-block';
+  }
+};
+
+function setNetStatus(msg, ok) {
+  document.getElementById('netStatus').textContent = msg;
+  document.getElementById('netDot').className = 'net-dot' + (ok ? ' connected' : '');
+}
+
+// ═══════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════
+async function updateStats() {
+  try {
+    const count = await glClient.readContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'get_count',
+      args: [],
+    });
+    const total = Number(count);
+    document.getElementById('statCount').textContent = total;
+
+    // Scan verdicts from contract
+    let trueCount = 0, falseCount = 0;
+    for (let i = 0; i < Math.min(total, 50); i++) {
+      try {
+        const raw = await glClient.readContract({
+          address: CONTRACT_ADDRESS,
+          functionName: 'get_verdict',
+          args: [String(i)],
+        });
+        if (raw && raw !== 'NOT_FOUND') {
+          const verdict = raw.includes('||') ? raw.split('||')[1] : raw;
+          if (verdict.trim() === 'TRUE') trueCount++;
+          if (verdict.trim() === 'FALSE') falseCount++;
+        }
+      } catch {}
+    }
+    document.getElementById('statTrue').textContent  = trueCount;
+    document.getElementById('statFalse').textContent = falseCount;
+  } catch(e) {
+    console.warn('Stats error:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CHECK CLAIM (write)
+// ═══════════════════════════════════════════════
+window.runCheck = async function() {
+  if (!glClient) { alert('Клиент не инициализирован, подождите или нажмите Reconnect'); return; }
+
+  const claim = document.getElementById('claimInput').value.trim();
+  if (!claim) return;
+
+  const btn    = document.getElementById('checkBtn');
+  const status = document.getElementById('checkStatus');
+  const results = document.getElementById('checkResults');
+
+  btn.disabled = true;
+  results.innerHTML = '';
+
+  status.innerHTML = `
+    <div class="card">
+      <div style="text-align:center;margin-bottom:12px">
+        <span class="spinner"></span>
+        <span style="font-size:12px;color:var(--muted)">Отправляем транзакцию в GenLayer...</span>
+      </div>
+      <div class="step-list" id="stepList"></div>
+    </div>`;
+
+  addStep('Sending check_claim transaction...', 'active');
+
+  try {
+    // 1. Send write transaction
+    const txHash = await glClient.writeContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'check_claim',
+      args: [claim],
+      value: BigInt(0),
+    });
+
+    addStep(`TX sent: ${txHash.slice(0,16)}...`, 'done');
+    addStep('Waiting for validator consensus (ACCEPTED)...', 'active');
+
+    // 2. Wait for ACCEPTED
+    const receipt = await glClient.waitForTransactionReceipt({
+      hash: txHash,
+      status: TransactionStatus.ACCEPTED,
+      interval: 3000,
+      retries: 60,
+    });
+
+    addStep('Consensus reached ✓', 'done');
+    addStep('Reading verdict from contract...', 'active');
+
+    // 3. Get the new claim_id = count - 1
+    const newCount = await glClient.readContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'get_count',
+      args: [],
+    });
+    const claimId = String(Number(newCount) - 1);
+
+    // 4. Read verdict
+    const rawVerdict = await glClient.readContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'get_verdict',
+      args: [claimId],
+    });
+
+    addStep('Verdict received ✓', 'done');
+
+    // Parse "claim||verdict"
+    let finalVerdict = 'UNVERIFIABLE';
+    if (rawVerdict && rawVerdict !== 'NOT_FOUND') {
+      const parts = rawVerdict.split('||');
+      finalVerdict = (parts[1] || parts[0]).trim().toUpperCase();
+      if (!['TRUE','FALSE','UNVERIFIABLE'].includes(finalVerdict)) finalVerdict = 'UNVERIFIABLE';
+    }
+
+    status.innerHTML = '';
+    results.innerHTML = buildResults(claimId, claim, finalVerdict, txHash);
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    await updateStats();
+
+  } catch(e) {
+    status.innerHTML = '';
+    results.innerHTML = `<div class="msg error">Ошибка: ${escHtml(e.message)}</div>`;
+    console.error(e);
+  }
+
+  btn.disabled = false;
+};
+
+function addStep(text, cls) {
+  const el = document.getElementById('stepList');
+  if (!el) return;
+  // Update last active → done
+  el.querySelectorAll('.step.active').forEach(s => {
+    s.classList.remove('active');
+    s.classList.add('done');
+    s.textContent = '✓ ' + s.textContent.replace('...','');
+  });
+  const s = document.createElement('div');
+  s.className = `step ${cls}`;
+  s.textContent = (cls === 'done' ? '✓ ' : '→ ') + text;
+  s.style.animationDelay = '0s';
+  el.appendChild(s);
+}
+
+function buildResults(claimId, claim, verdict, txHash) {
+  return `
+    <div class="claim-id-badge">checks["${claimId}"] = "${escHtml(claim)}||${verdict}"</div>
+    <div class="verdict-banner ${verdict}">
+      <div class="verdict-label">GenLayer Consensus Verdict</div>
+      <div class="verdict-text">${verdict}</div>
+      <div class="verdict-meta">claim_id: ${claimId} · реальный консенсус валидаторов</div>
+    </div>
+    <div class="tx-info">
+      <div class="tx-label">Transaction Hash</div>
+      <div class="tx-hash">${txHash}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// GET VERDICT (read)
+// ═══════════════════════════════════════════════
+window.getVerdict = async function() {
+  if (!glClient) { alert('Клиент не инициализирован'); return; }
+
+  const id  = document.getElementById('getIdInput').value.trim();
+  const out = document.getElementById('getResult');
+  if (!id) { out.innerHTML = '<div class="msg error">Введи claim_id</div>'; return; }
+
+  out.innerHTML = '<div class="msg"><span class="spinner"></span>Читаем контракт...</div>';
+
+  try {
+    const raw = await glClient.readContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'get_verdict',
+      args: [id],
+    });
+
+    if (!raw || raw === 'NOT_FOUND') {
+      out.innerHTML = `<div class="msg error">NOT_FOUND — checks["${escHtml(id)}"] не существует</div>`;
+      return;
+    }
+
+    const parts   = raw.split('||');
+    const claimTxt = parts.length > 1 ? parts[0] : '(unknown)';
+    const verdict  = (parts.length > 1 ? parts[1] : parts[0]).trim().toUpperCase();
+    const v        = ['TRUE','FALSE','UNVERIFIABLE'].includes(verdict) ? verdict : 'UNVERIFIABLE';
+
+    out.innerHTML = `
+      <div class="claim-id-badge">get_verdict("${escHtml(id)}")</div>
+      <div class="verdict-banner ${v}">
+        <div class="verdict-label">Сохранённый вердикт · GenLayer</div>
+        <div class="verdict-text">${v}</div>
+        <div class="verdict-meta">claim_id: ${escHtml(id)}</div>
+      </div>
+      <div class="card">
+        <div class="section-label">checks["${escHtml(id)}"] raw</div>
+        <div style="font-size:12px;color:var(--muted);word-break:break-all">"${escHtml(raw)}"</div>
+      </div>`;
+  } catch(e) {
+    out.innerHTML = `<div class="msg error">Ошибка: ${escHtml(e.message)}</div>`;
+  }
+};
+
+// ═══════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════
+window.loadHistory = async function() {
+  if (!glClient) return;
+  const el = document.getElementById('historyList');
+  el.innerHTML = '<div class="msg"><span class="spinner"></span>Загружаем из контракта...</div>';
+
+  try {
+    const count = await glClient.readContract({
+      address: CONTRACT_ADDRESS,
+      functionName: 'get_count',
+      args: [],
+    });
+    const total = Number(count);
+
+    if (total === 0) {
+      el.innerHTML = '<div class="msg">Проверок пока нет.</div>';
+      return;
+    }
+
+    const items = [];
+    for (let i = total - 1; i >= 0; i--) {
+      try {
+        const raw = await glClient.readContract({
+          address: CONTRACT_ADDRESS,
+          functionName: 'get_verdict',
+          args: [String(i)],
+        });
+        if (raw && raw !== 'NOT_FOUND') {
+          const parts   = raw.split('||');
+          const claim   = parts.length > 1 ? parts[0] : raw;
+          const verdict = (parts.length > 1 ? parts[1] : raw).trim().toUpperCase();
+          const v       = ['TRUE','FALSE','UNVERIFIABLE'].includes(verdict) ? verdict : 'UNVERIFIABLE';
+          items.push({ id: i, claim, verdict: v });
+        }
+      } catch {}
+    }
+
+    if (!items.length) {
+      el.innerHTML = '<div class="msg">Нет данных.</div>';
+      return;
+    }
+
+    el.innerHTML = items.map(it => `
+      <div class="history-item" onclick="jumpToVerdict('${it.id}')">
+        <span class="history-id">#${it.id}</span>
+        <span class="history-claim" title="${escHtml(it.claim)}">${escHtml(it.claim)}</span>
+        <span class="history-verdict ${it.verdict}">${it.verdict}</span>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = `<div class="msg error">Ошибка загрузки: ${escHtml(e.message)}</div>`;
+  }
+};
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+window.switchTab = function(name) {
   ['check','get','history'].forEach((t, i) => {
     document.querySelectorAll('.tab')[i].classList.toggle('active', t === name);
     document.getElementById('panel-' + t).classList.toggle('active', t === name);
   });
-  if (name === 'history') renderHistory();
+  if (name === 'history') loadHistory();
+};
+
+window.jumpToVerdict = function(id) {
+  switchTab('get');
+  document.getElementById('getIdInput').value = id;
+  getVerdict();
+};
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Один независимый вызов Claude — каждая нода думает сама
-async function callNode(apiKey, nodeId, claim) {
-  const system = `You are an independent fact-checker validator node #${nodeId} in a decentralized consensus network.
-Analyze the claim using your knowledge. Respond ONLY with raw JSON, no markdown, no extra text:
-{"verdict":"TRUE","confidence":0.9,"reasoning":"one concise sentence explaining your decision"}
-verdict must be exactly one of: TRUE, FALSE, UNVERIFIABLE
-confidence is a float 0.0–1.0`;
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-ipc': 'true',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 300,
-      system,
-      messages: [{ role: 'user', content: `Claim: "${claim}"` }],
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err.error && err.error.message) || `HTTP ${res.status}`);
-  }
-
-  const data = await res.json();
-  const raw  = data.content.map(b => b.text || '').join('').trim();
-
-  try {
-    const clean  = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    const verdict = ['TRUE','FALSE','UNVERIFIABLE'].includes(parsed.verdict) ? parsed.verdict : 'UNVERIFIABLE';
-    return { node_id: nodeId, verdict, confidence: parseFloat(parsed.confidence) || 0.5, reasoning: parsed.reasoning || '' };
-  } catch {
-    return { node_id: nodeId, verdict: 'UNVERIFIABLE', confidence: 0.0, reasoning: 'Parse error: ' + raw.slice(0,100) };
-  }
-}
-
-async function runCheck() {
-  const claim = document.getElementById('claimInput').value.trim();
-  if (!claim) return;
-
-  const apiKey = document.getElementById('apiKey').value.trim();
-  if (!apiKey) { alert('Введи Anthropic API key'); return; }
-
-  const btn       = document.getElementById('checkBtn');
-  const status    = document.getElementById('checkStatus');
-  const results   = document.getElementById('checkResults');
-  const n         = parseInt(document.getElementById('agentCount').value) || 3;
-  const threshold = parseFloat(document.getElementById('threshold').value);
-
-  btn.disabled = true;
-  results.innerHTML = '';
-  status.innerHTML = `
-    <div class="card" style="text-align:center">
-      <span class="spinner"></span>
-      <span style="font-size:12px;color:var(--muted)">${n} validator nodes думают независимо...</span>
-      <div id="loadingSteps" class="loading-steps"></div>
-    </div>`;
-
-  Array.from({length: n}, (_, i) => `→ NODE_${i+1}: независимый вызов LLM...`).forEach((m, i) => {
-    setTimeout(() => {
-      const el = document.getElementById('loadingSteps');
-      if (!el) return;
-      const s = document.createElement('span');
-      s.textContent = m; s.style.animationDelay = i * 0.1 + 's';
-      el.appendChild(s);
-    }, i * 600);
-  });
-
-  try {
-    // Все N нод параллельно и независимо
-    const nodes = await Promise.all(
-      Array.from({length: n}, (_, i) => callNode(apiKey, i + 1, claim))
-    );
-
-    // Консенсус по большинству
-    const counts = { TRUE: 0, FALSE: 0, UNVERIFIABLE: 0 };
-    nodes.forEach(nd => { counts[nd.verdict] = (counts[nd.verdict] || 0) + 1; });
-
-    let final_verdict = 'UNVERIFIABLE';
-    let consensus = false;
-    for (const v of ['TRUE', 'FALSE', 'UNVERIFIABLE']) {
-      if (counts[v] / n >= threshold) { final_verdict = v; consensus = true; break; }
-    }
-
-    const agreeing = nodes.filter(nd => nd.verdict === final_verdict);
-    const confidence = agreeing.length ? agreeing.reduce((s, nd) => s + nd.confidence, 0) / agreeing.length : 0;
-
-    // Сохраняем — mirrors: checks[id] = "claim||verdict"
-    const claimId = String(getCount());
-    const store   = loadStore();
-    store[claimId] = { claim, verdict: final_verdict, confidence, consensus_reached: consensus, vote_breakdown: counts, nodes, timestamp: Date.now() };
-    saveStore(store);
-    setCount(getCount() + 1);
-    updateStats();
-
-    status.innerHTML = '';
-    results.innerHTML = buildResults(claimId, claim, final_verdict, confidence, counts, nodes, n, consensus, threshold);
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  } catch(e) {
-    status.innerHTML = '';
-    results.innerHTML = '<div class="msg error">Ошибка: ' + escHtml(e.message) + '</div>';
-  }
-  btn.disabled = false;
-}
-
-function buildResults(claimId, claim, final_verdict, confidence, counts, nodes, n, consensus, threshold) {
-  const pillsHTML = ['TRUE','FALSE','UNVERIFIABLE'].map(v => `
-    <div class="vote-pill">
-      <div class="vote-count ${v}">${counts[v] || 0}</div>
-      <div class="vote-name">${v}</div>
-    </div>`).join('');
-
-  const nodesHTML = nodes.map(nd => `
-    <div class="node-card ${nd.verdict}">
-      <div class="node-header">
-        <span class="node-id">NODE_${nd.node_id}</span>
-        <span class="node-badge ${nd.verdict}">${nd.verdict}</span>
-      </div>
-      <div class="node-reasoning">${escHtml(nd.reasoning)}</div>
-      <div class="node-confidence">Confidence: ${Math.round(nd.confidence * 100)}%
-        <div class="conf-bar"><div class="conf-fill" style="width:${nd.confidence*100}%"></div></div>
-      </div>
-    </div>`).join('');
-
-  return `
-    <div class="claim-id-badge">checks["${claimId}"] = "${escHtml(claim)}||${final_verdict}"</div>
-    <div class="verdict-banner ${final_verdict}">
-      <div class="verdict-label">Consensus Verdict</div>
-      <div class="verdict-text">${final_verdict}</div>
-      <div class="verdict-meta">
-        ${consensus ? 'Консенсус достигнут' : 'Консенсус не достигнут — UNVERIFIABLE'} ·
-        ${n} nodes · threshold ${Math.round(threshold*100)}% · confidence ${Math.round(confidence*100)}%
-      </div>
-    </div>
-    <div class="votes-row">${pillsHTML}</div>
-    <div class="card">
-      <div class="section-label">Validator Nodes — независимые решения</div>
-      ${nodesHTML}
-    </div>`;
-}
-
-function getVerdict() {
-  const id  = document.getElementById('getIdInput').value.trim();
-  const out = document.getElementById('getResult');
-  if (!id) { out.innerHTML = '<div class="msg error">Введи claim_id</div>'; return; }
-  const entry = loadStore()[id];
-  if (!entry) {
-    out.innerHTML = `<div class="msg error">NOT_FOUND — checks["${escHtml(id)}"] не существует</div>`;
-    return;
-  }
-  out.innerHTML = `
-    <div class="claim-id-badge">get_verdict("${escHtml(id)}")</div>
-    <div class="verdict-banner ${entry.verdict}">
-      <div class="verdict-label">Сохранённый вердикт</div>
-      <div class="verdict-text">${entry.verdict}</div>
-      <div class="verdict-meta">${new Date(entry.timestamp).toLocaleString()} · confidence ${Math.round(entry.confidence*100)}%</div>
-    </div>
-    <div class="card">
-      <div class="section-label">checks["${escHtml(id)}"] raw</div>
-      <div style="font-size:12px;color:var(--muted);word-break:break-all">"${escHtml(entry.claim)}||${entry.verdict}"</div>
-    </div>`;
-}
-
-function renderHistory() {
-  const store = loadStore();
-  const keys  = Object.keys(store).sort((a, b) => parseInt(b) - parseInt(a));
-  const el    = document.getElementById('historyList');
-  if (!keys.length) { el.innerHTML = '<div class="msg">Проверок пока нет.</div>'; return; }
-  el.innerHTML = keys.map(id => {
-    const e = store[id];
-    return `<div class="history-item" onclick="jumpToVerdict('${id}')">
-      <span class="history-id">#${id}</span>
-      <span class="history-claim" title="${escHtml(e.claim)}">${escHtml(e.claim)}</span>
-      <span class="history-verdict ${e.verdict}">${e.verdict}</span>
-      <span class="history-date">${new Date(e.timestamp).toLocaleDateString()}</span>
-    </div>`;
-  }).join('');
-}
-
-function jumpToVerdict(id) { switchTab('get'); document.getElementById('getIdInput').value = id; getVerdict(); }
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+// ═══════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  updateStats();
   document.getElementById('claimInput').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runCheck(); }
   });
+  initClient();
 });
-updateStats();
 </script>
 </body>
 </html>
