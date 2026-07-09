@@ -27,54 +27,24 @@
   body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh;padding:40px 20px;
     background-image:radial-gradient(ellipse at 20% 0%,rgba(0,229,255,0.04) 0%,transparent 60%),
                      radial-gradient(ellipse at 80% 100%,rgba(124,58,237,0.05) 0%,transparent 60%);}
-  header{max-width:780px;margin:0 auto 32px;}
+  .wrap{max-width:640px;margin:0 auto;}
   .logo{font-size:11px;letter-spacing:0.25em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;opacity:0.8;}
   h1{font-family:var(--font-sans);font-size:clamp(24px,4vw,36px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:10px;}
   h1 span{color:var(--accent);}
-  .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;}
+  .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;margin-bottom:28px;}
   code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;color:var(--accent);}
-  .bar{max-width:780px;margin:0 auto 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;}
-  .bar-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s;}
-  .dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
-  .dot.err{background:var(--red);}
-  .lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
-  .val{font-size:11px;color:var(--text);flex:1;word-break:break-all;}
-  .val.accent{color:var(--accent);}
-  .hint{font-size:11px;color:var(--yellow);margin-top:8px;line-height:1.5;display:none;}
-  .hint a{color:var(--accent);cursor:pointer;text-decoration:underline;}
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:780px;margin:0 auto 24px;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
-  .stat-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-  .stat-val{font-size:24px;font-weight:700;font-family:var(--font-sans);color:#fff;}
-  .stat-val.green{color:var(--green);}.stat-val.red{color:var(--red);}
-  .tabs{max-width:780px;margin:0 auto;display:flex;gap:2px;border-bottom:1px solid var(--border);}
-  .tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:var(--font-mono);
-    font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color 0.15s;}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-  .tab:hover:not(.active){color:var(--text);}
-  .panel{display:none;max-width:780px;margin:0 auto;padding-top:24px;}
-  .panel.active{display:block;}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;}
-  textarea,input[type=text]{background:var(--bg);border:1px solid var(--border);border-radius:6px;
-    color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.2s;width:100%;}
-  textarea:focus,input:focus{border-color:var(--accent);}
-  textarea::placeholder,input::placeholder{color:var(--muted);}
-  textarea{resize:vertical;min-height:64px;}
-  .input-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
-  .input-row textarea,.input-row input{flex:1;min-width:200px;}
+  textarea{background:var(--bg);border:1px solid var(--border);border-radius:6px;width:100%;
+    color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 12px;outline:none;
+    transition:border-color 0.2s;resize:vertical;min-height:70px;}
+  textarea:focus{border-color:var(--accent);}
+  textarea::placeholder{color:var(--muted);}
   button.primary{background:var(--accent);color:#000;border:none;border-radius:6px;font-family:var(--font-mono);
-    font-weight:600;font-size:12px;letter-spacing:0.08em;padding:10px 20px;cursor:pointer;text-transform:uppercase;
-    white-space:nowrap;transition:opacity 0.2s,transform 0.1s;}
-  button.primary:hover{opacity:0.85;}button.primary:active{transform:scale(0.97);}
+    font-weight:600;font-size:12px;letter-spacing:0.08em;padding:12px 20px;cursor:pointer;text-transform:uppercase;
+    width:100%;margin-top:12px;transition:opacity 0.2s,transform 0.1s;}
+  button.primary:hover{opacity:0.85;}button.primary:active{transform:scale(0.99);}
   button.primary:disabled{opacity:0.4;cursor:not-allowed;}
-  button.sec{background:transparent;color:var(--accent);border:1px solid rgba(0,229,255,0.4);border-radius:6px;
-    font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;padding:6px 14px;cursor:pointer;
-    text-transform:uppercase;transition:opacity 0.2s;white-space:nowrap;}
-  button.sec:hover{opacity:0.7;}
-  .warn{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:6px;
-    padding:12px 16px;font-size:11px;color:var(--yellow);line-height:1.6;margin-bottom:16px;}
-  .verdict-banner{border-radius:8px;padding:28px;text-align:center;margin-bottom:16px;border:1px solid;position:relative;overflow:hidden;}
+  .verdict-banner{border-radius:8px;padding:28px;text-align:center;margin-top:16px;border:1px solid;position:relative;overflow:hidden;}
   .verdict-banner::before{content:'';position:absolute;inset:0;opacity:0.06;background:currentColor;}
   .verdict-banner.TRUE{border-color:var(--green);color:var(--green);}
   .verdict-banner.FALSE{border-color:var(--red);color:var(--red);}
@@ -82,226 +52,108 @@
   .verdict-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;margin-bottom:8px;}
   .verdict-text{font-family:var(--font-sans);font-size:40px;font-weight:700;}
   .verdict-meta{margin-top:10px;font-size:11px;opacity:0.6;letter-spacing:0.05em;}
-  .badge{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;
-    padding:3px 10px;font-size:11px;color:var(--muted);margin-bottom:12px;}
-  .tx-box{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;}
-  .tx-lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-  .tx-val{font-size:11px;color:var(--accent);word-break:break-all;}
-  .step-list{margin-top:10px;}
-  .step{font-size:11px;padding:3px 0;opacity:0;animation:fi 0.3s forwards;}
+  .step-list{margin-top:16px;}
+  .step{font-size:12px;padding:4px 0;opacity:0;animation:fi 0.3s forwards;color:var(--muted);}
   .step.ok{color:var(--green);}
   .step.run{color:var(--accent);}
-  .step.fail{color:var(--red);}
   @keyframes fi{to{opacity:1;}}
   .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);
     border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:6px;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .msg{font-size:12px;color:var(--muted);padding:8px 0;}
   .msg.err{color:var(--red);}
-  .sec-lbl{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-  .hist-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
-  .hist-item:hover .hist-claim{color:var(--accent);}
-  .hist-id{font-size:11px;color:var(--muted);min-width:28px;}
-  .hist-claim{font-size:12px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.15s;}
-  .hist-v{font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
-  .hist-v.TRUE{background:rgba(34,197,94,0.15);color:var(--green);}
-  .hist-v.FALSE{background:rgba(239,68,68,0.15);color:var(--red);}
-  .hist-v.UNVERIFIABLE{background:rgba(245,158,11,0.15);color:var(--yellow);}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">⬡ GenLayer · Intelligent Contract · Studionet</div>
+<div class="wrap">
+  <div class="logo">⬡ GenLayer · Intelligent Contract</div>
   <h1>Decentralized<br/><span>Fact Checker</span></h1>
   <p class="subtitle">
-    Прямое чтение intelligent contract на GenLayer Studionet.<br/>
-    <code>get_verdict(id)</code> · <code>get_count()</code> · запись <code>check_claim</code> выполняется в GenLayer Studio
+    Утверждение уходит на проверку сети валидаторов GenLayer.<br/>
+    Каждый валидатор независимо спрашивает свою модель и голосует за консенсусный вердикт.
   </p>
-</header>
 
-<!-- Contract bar -->
-<div class="bar">
-  <div class="bar-row">
-    <div class="dot" id="netDot"></div>
-    <span class="lbl">Contract</span>
-    <span class="val accent" id="netAddr">0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69</span>
-    <span style="font-size:11px;color:var(--muted)" id="netStatus">Initializing...</span>
-    <button class="sec" onclick="initClient()" id="reconnectBtn" style="display:none">Reconnect</button>
-  </div>
-</div>
-
-<div class="stats-row">
-  <div class="stat-card"><div class="stat-label">get_count()</div><div class="stat-val" id="statCount">—</div></div>
-  <div class="stat-card"><div class="stat-label">True</div><div class="stat-val green" id="statTrue">—</div></div>
-  <div class="stat-card"><div class="stat-label">False</div><div class="stat-val red" id="statFalse">—</div></div>
-</div>
-
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('get')">get_verdict</button>
-  <button class="tab" onclick="switchTab('history')">history</button>
-  <button class="tab" onclick="switchTab('about')">check_claim</button>
-</div>
-
-<div class="panel" id="panel-about">
   <div class="card">
-    <div class="warn">
-      ⚡ <code>check_claim</code> — write-операция, требует on-chain баланс для оплаты
-      транзакции валидаторам. Этот сайт — read-only витрина контракта, поэтому
-      запуск новой проверки делается в GenLayer Studio (там уже есть
-      профинансированный аккаунт). После того как транзакция подтвердится в
-      Studio, результат появится здесь — во вкладках <code>get_verdict</code>
-      и <code>history</code>, без перезагрузки чего-либо на этой странице.
-    </div>
+    <textarea id="claimInput" placeholder="Введи утверждение для проверки..." rows="2"></textarea>
+    <button class="primary" id="checkBtn" onclick="runCheck()">▶ Спросить валидаторов</button>
   </div>
-</div>
 
-<div class="panel active" id="panel-get">
-  <div class="card">
-    <div class="input-row">
-      <input type="text" id="getIdInput" placeholder="claim_id (например: 0, 1, 2...)" />
-      <button class="primary" onclick="getVerdict()">▶ Get</button>
-    </div>
-  </div>
-  <div id="getResult"></div>
-</div>
-
-<div class="panel" id="panel-history">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div class="sec-lbl">checks[ ] — все проверки из контракта</div>
-      <button class="sec" onclick="loadHistory()">↻ Refresh</button>
-    </div>
-    <div id="historyList"><div class="msg">Загрузка...</div></div>
-  </div>
+  <div id="checkStatus"></div>
+  <div id="checkResults"></div>
 </div>
 
 <script type="module">
-// ─── CONFIG ──────────────────────────────────────
+import { createClient, createAccount, chains } from 'genlayer-js';
+import { TransactionStatus } from 'genlayer-js/types';
+
+// Технические детали контракта скрыты от интерфейса намеренно —
+// это демо про идею (запрос → консенсус валидаторов → ответ),
+// а не про управление кошельками.
 const CONTRACT = '0xf533C8a8ff05f29d75cf9a1c894106E6103bfd69';
-// ─── IMPORTS ──────────────────────────────────────
-import { createClient, chains } from 'genlayer-js';
-let client = null;
-// ─── INIT (read-only, без аккаунта/приватного ключа) ─
-window.initClient = async function() {
-  setNet('Connecting...', null);
+let client = createClient({ chain: chains.studionet, account: createAccount() });
+
+window.runCheck = async function() {
+  const claim = document.getElementById('claimInput').value.trim();
+  if (!claim) return;
+  const btn     = document.getElementById('checkBtn');
+  const status  = document.getElementById('checkStatus');
+  const results = document.getElementById('checkResults');
+  btn.disabled = true;
+  results.innerHTML = '';
+  status.innerHTML = `<div class="card" style="text-align:center">
+    <span class="spinner"></span><span style="font-size:12px;color:var(--muted)">Отправляем запрос сети...</span>
+    <div class="step-list" id="steps"></div></div>`;
   try {
-    client = createClient({ chain: chains.studionet });
-    const count = await client.readContract({
-      address: CONTRACT, functionName: 'get_count', args: [],
+    step('Запрос отправлен валидаторам...', 'run');
+    const txHash = await client.writeContract({
+      address: CONTRACT, functionName: 'check_claim', args: [claim], value: BigInt(0),
     });
-    document.getElementById('reconnectBtn').style.display = 'none';
-    setNet(`Connected · count=${count}`, true);
-    await updateStats();
+    step('Ждём консенсуса валидаторов...', 'run');
+    await client.waitForTransactionReceipt({
+      hash: txHash, status: TransactionStatus.ACCEPTED, interval: 3000, retries: 60,
+    });
+    step('Консенсус достигнут ✓', 'ok');
+    const count   = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
+    const claimId = String(Number(count) - 1);
+    const raw     = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [claimId] });
+    let verdict = 'UNVERIFIABLE';
+    if (raw && raw !== 'NOT_FOUND') {
+      const v = (raw.includes('||') ? raw.split('||')[1] : raw).trim().toUpperCase();
+      if (['TRUE','FALSE','UNVERIFIABLE'].includes(v)) verdict = v;
+    }
+    status.innerHTML = '';
+    results.innerHTML = `
+      <div class="verdict-banner ${verdict}">
+        <div class="verdict-label">Вердикт валидаторов</div>
+        <div class="verdict-text">${verdict}</div>
+        <div class="verdict-meta">реальный ончейн-консенсус GenLayer</div>
+      </div>`;
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch(e) {
-    console.error('Init error:', e);
-    setNet('Error: ' + e.message.slice(0, 70), false);
-    document.getElementById('reconnectBtn').style.display = 'inline-block';
+    status.innerHTML = '';
+    results.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
+    console.error(e);
   }
+  btn.disabled = false;
 };
-function setNet(msg, ok) {
-  document.getElementById('netStatus').textContent = msg;
-  const dot = document.getElementById('netDot');
-  dot.className = 'dot' + (ok === true ? ' ok' : ok === false ? ' err' : '');
+
+function step(text, cls) {
+  const el = document.getElementById('steps');
+  if (!el) return;
+  el.querySelectorAll('.step.run').forEach(s => { s.className = 'step ok'; s.textContent = '✓ ' + s.textContent.replace(/^→ /,''); });
+  const s = document.createElement('div');
+  s.className = `step ${cls}`;
+  s.textContent = (cls === 'ok' ? '✓ ' : '→ ') + text;
+  el.appendChild(s);
 }
-// ─── STATS ────────────────────────────────────────
-async function updateStats() {
-  try {
-    const count = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
-    const total = Number(count);
-    document.getElementById('statCount').textContent = total;
-    let t = 0, f = 0;
-    for (let i = 0; i < Math.min(total, 50); i++) {
-      try {
-        const raw = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [String(i)] });
-        if (raw && raw !== 'NOT_FOUND') {
-          const v = raw.includes('||') ? raw.split('||')[1].trim() : raw.trim();
-          if (v === 'TRUE')  t++;
-          if (v === 'FALSE') f++;
-        }
-      } catch {}
-    }
-    document.getElementById('statTrue').textContent  = t;
-    document.getElementById('statFalse').textContent = f;
-  } catch(e) { console.warn('stats:', e); }
-}
-// ─── GET VERDICT ──────────────────────────────────
-window.getVerdict = async function() {
-  if (!client) { alert('Клиент не готов'); return; }
-  const id  = document.getElementById('getIdInput').value.trim();
-  const out = document.getElementById('getResult');
-  if (!id) { out.innerHTML = '<div class="msg err">Введи claim_id</div>'; return; }
-  out.innerHTML = '<div class="msg"><span class="spinner"></span>Читаем контракт...</div>';
-  try {
-    const raw = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [id] });
-    if (!raw || raw === 'NOT_FOUND') {
-      out.innerHTML = `<div class="msg err">NOT_FOUND — checks["${esc(id)}"] не существует</div>`;
-      return;
-    }
-    const parts = raw.split('||');
-    const v = (['TRUE','FALSE','UNVERIFIABLE'].includes((parts[1]||'').trim().toUpperCase()))
-      ? parts[1].trim().toUpperCase() : 'UNVERIFIABLE';
-    out.innerHTML = `
-      <div class="badge">get_verdict("${esc(id)}")</div>
-      <div class="verdict-banner ${v}">
-        <div class="verdict-label">Вердикт из контракта</div>
-        <div class="verdict-text">${v}</div>
-        <div class="verdict-meta">claim_id: ${esc(id)}</div>
-      </div>
-      <div class="card"><div class="sec-lbl">raw</div>
-        <div style="font-size:12px;color:var(--muted);word-break:break-all">"${esc(raw)}"</div></div>`;
-  } catch(e) {
-    out.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
-  }
-};
-// ─── HISTORY ─────────────────────────────────────
-window.loadHistory = async function() {
-  if (!client) return;
-  const el = document.getElementById('historyList');
-  el.innerHTML = '<div class="msg"><span class="spinner"></span>Загружаем из контракта...</div>';
-  try {
-    const count = await client.readContract({ address: CONTRACT, functionName: 'get_count', args: [] });
-    const total = Number(count);
-    if (total === 0) { el.innerHTML = '<div class="msg">Проверок пока нет.</div>'; return; }
-    const items = [];
-    for (let i = total - 1; i >= 0; i--) {
-      try {
-        const raw = await client.readContract({ address: CONTRACT, functionName: 'get_verdict', args: [String(i)] });
-        if (raw && raw !== 'NOT_FOUND') {
-          const parts = raw.split('||');
-          const claim = parts[0] || raw;
-          const v     = (['TRUE','FALSE','UNVERIFIABLE'].includes((parts[1]||'').trim().toUpperCase()))
-            ? parts[1].trim().toUpperCase() : 'UNVERIFIABLE';
-          items.push({ id: i, claim, v });
-        }
-      } catch {}
-    }
-    el.innerHTML = items.length
-      ? items.map(it => `<div class="hist-item" onclick="jumpTo('${it.id}')">
-          <span class="hist-id">#${it.id}</span>
-          <span class="hist-claim" title="${esc(it.claim)}">${esc(it.claim)}</span>
-          <span class="hist-v ${it.v}">${it.v}</span>
-        </div>`).join('')
-      : '<div class="msg">Нет данных.</div>';
-  } catch(e) {
-    el.innerHTML = `<div class="msg err">Ошибка: ${esc(e.message)}</div>`;
-  }
-};
-// ─── UTILS ───────────────────────────────────────
-window.switchTab = n => {
-  ['get','history','about'].forEach((t,i) => {
-    document.querySelectorAll('.tab')[i].classList.toggle('active', t===n);
-    document.getElementById('panel-'+t).classList.toggle('active', t===n);
-  });
-  if (n === 'history') loadHistory();
-};
-window.jumpTo = id => { switchTab('get'); document.getElementById('getIdInput').value = id; getVerdict(); };
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-// ─── BOOT ────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', () => {
-  initClient();
+  document.getElementById('claimInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runCheck(); }
+  });
 });
 </script>
 </body>
 </html>
-
